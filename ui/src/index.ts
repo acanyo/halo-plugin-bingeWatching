@@ -1,29 +1,53 @@
 import { definePlugin } from "@halo-dev/console-shared";
-import HomeView from "./views/HomeView.vue";
-import { IconPlug } from "@halo-dev/components";
+import Douban from "./views/Douban.vue";
+import Cron from "./views/Cron.vue";
+import TablerBrandDouban from '~icons/tabler/brand-douban';
 import { markRaw } from "vue";
+import { DoubanExtension } from "./editor";
 
 export default definePlugin({
+  name: "plugin-douban",
   components: {},
   routes: [
     {
       parentName: "Root",
       route: {
-        path: "/example",
-        name: "Example",
-        component: HomeView,
+        path: "/douban",
+        name: "DoubanRoot",
         meta: {
-          title: "示例页面",
+          title: "豆瓣",
           searchable: true,
+          permissions: ["plugin:douban:view"],
           menu: {
-            name: "示例页面",
-            group: "示例分组",
-            icon: markRaw(IconPlug),
-            priority: 0,
+            name: "豆瓣",
+            group: "content",
+            icon: markRaw(TablerBrandDouban),
+            priority: 20,
           },
         },
+        children: [
+          {
+            path: "",
+            name: "Douban",
+            component: Douban,
+          },
+          {
+            path: "cron",
+            name: "DoubanCron",
+            component: Cron,
+            meta: {
+              title: "豆瓣任务",
+              searchable: true,
+              permissions: ["plugin:douban:view"],
+            },
+          },
+        ]
       },
     },
   ],
-  extensionPoints: {},
+  extensionPoints: {
+    "default:editor:extension:create": () => {
+      return [DoubanExtension];
+    },
+  },
 });
