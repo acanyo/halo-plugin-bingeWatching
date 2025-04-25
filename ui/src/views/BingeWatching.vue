@@ -18,25 +18,26 @@ import {useQuery} from "@tanstack/vue-query";
 import {computed, ref, watch, onMounted} from "vue";
 import {formatDatetime} from "@/utils/date";
 import {useRouteQuery} from "@vueuse/router";
-import TimelineEditingModal from "../components/TimelineEditingModal.vue";
-import {timelineApi} from "@/api";
-import type {Timeline} from "@/api/generated";
-import IconParkTimeline from '~icons/icon-park/timeline';
+import MovieEditingModal from "../components/MovieEditingModal.vue";
+import {handsomeMovieApi} from "@/api";
+import type {HandsomeMovie} from "@/api/generated";
+import IconParkMovie from '~icons/icon-park-outline/movie';
 
 defineOptions({
-  name: "TimelineView",
+  name: "MovieView",
 });
 
-const selectedTimeline = ref<Timeline | undefined>();
-const selectedTimelines = ref<string[]>([]);
+const selectedMovie = ref<HandsomeMovie | undefined>();
+const selectedMovies = ref<string[]>([]);
 const checkedAll = ref(false);
 const selectedSort = useRouteQuery<string | undefined>("sort");
-const selectedType = useRouteQuery<string | undefined>("type");
-const timelineTypes = ref<{ label: string; value: string | undefined; }[]>([
-  {
-    label: '全部',
-    value: undefined,
-  }
+const selectedType = useRouteQuery<string | undefined>("status");
+const movieStatus = ref<{ label: string; value: string | undefined; }[]>([
+  { label: '全部', value: undefined },
+  { label: '已看', value: '已看' },
+  { label: '在看', value: '在看' },
+  { label: '想看', value: '想看' },
+  { label: '弃坑', value: '弃坑' }
 ]);
 
 const page = ref(1);
@@ -63,16 +64,16 @@ const hasFilters = computed(() => {
 });
 
 const {
-  data: timelines,
+  data: movies,
   isLoading,
   isFetching,
   refetch,
 } = useQuery({
-  queryKey: ["timelines", page, size, selectedSort, selectedType, keyword],
+  queryKey: ["movies", page, size, selectedSort, selectedType, keyword],
   queryFn: async () => {
     try {
       const response = await fetch(
-        `/apis/api.timeline.lik.cc/v1alpha1/timelines?page=${page.value - 1}&size=${size.value}${
+        `/apis/api.bingewatching.lik.cc/v1alpha1/movies?page=${page.value - 1}&size=${size.value}${
           selectedType.value ? `&type=${selectedType.value}` : ""
         }${keyword.value ? `&keyword=${encodeURIComponent(keyword.value)}` : ""}`
       );
@@ -81,19 +82,19 @@ const {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const data: { items: Timeline[]; total: number } = await response.json();
+      const data: { items: HandsomeMovie[]; total: number } = await response.json();
       data.items = data.items.map(item => ({
         ...item,
-        spec: {
-          ...item.spec,
-          timestamp: formatDatetime(item.spec.timestamp)
+        metadata: {
+          ...item.metadata,
+          timestamp: formatDatetime(item.metadata.creationTimestamp)
         }
       }));
       total.value = data.total;
       return data.items;
     } catch (error) {
-      console.error("Failed to fetch timelines:", error);
-      Toast.error("获取时间线列表失败");
+      console.error("Failed to fetch Movies:", error);
+      Toast.error("获取追剧信息列表失败");
       return [];
     }
   },
@@ -103,10 +104,10 @@ const handleCheckAllChange = (e: Event) => {
   const { checked } = e.target as HTMLInputElement;
   checkedAll.value = checked;
   if (checkedAll.value) {
-    selectedTimelines.value =
-      timelines.value?.map((timeline) => timeline.metadata.name) || [];
+    selectedMovies.value =
+      movies.value?.map((movie) => movie.metadata.name) || [];
   } else {
-    selectedTimelines.value.length = 0;
+    selectedMovies.value.length = 0;
   }
 };
 
@@ -117,13 +118,13 @@ const handleDeleteInBatch = () => {
     confirmType: "danger",
     onConfirm: async () => {
       try {
-        const promises = selectedTimelines.value.map((timeline) => {
-          return timelineApi.deleteTimeline(timeline);
+        const promises = selectedMovies.value.map((movie) => {
+          return handsomeMovieApi.deleteHandsomeMovie(movie);
         });
         if (promises) {
           await Promise.all(promises);
         }
-        selectedTimelines.value.length = 0;
+        selectedMovies.value.length = 0;
         checkedAll.value = false;
         Toast.success("删除成功");
       } catch (e) {
@@ -144,51 +145,34 @@ function onKeywordChange() {
   keyword.value = searchText.value;
 }
 
-const handleOpenCreateModal = (timeline?: Timeline) => {
-  selectedTimeline.value = timeline;
+const handleOpenCreateModal = (movie?: HandsomeMovie) => {
+  selectedMovie.value = movie;
   editingModal.value = true;
 };
 
 const onEditingModalClose = async () => {
-  selectedTimeline.value = undefined;
+  selectedMovie.value = undefined;
   refetch();
 };
 
-const fetchTimelineTypes = async () => {
-  try {
-    const response = await timelineApi.listTimelines();
-    const types = new Set(response.items.map((item: Timeline) => item.spec.type));
-    
-    timelineTypes.value = [
-      { label: '全部', value: undefined },
-      ...Array.from(types).map(type => ({
-        label: type,
-        value: type
-      }))
-    ];
-  } catch (error) {
-    console.error('获取时间线类型失败:', error);
-  }
-};
-
 onMounted(() => {
-  fetchTimelineTypes();
+  // No need to fetch movie status as it's no longer fetched
 });
 </script>
 
 <template>
-  <TimelineEditingModal
+  <MovieEditingModal
     v-model:visible="editingModal"
-    :timeline="selectedTimeline"
+    :timeline="selectedMovie"
     @close="onEditingModalClose"
   />
 
-  <VPageHeader title="时间线">
+  <VPageHeader title="影视管理">
     <template #icon>
-      <IconParkTimeline />
+      <IconParkMovie />
     </template>
     <template #actions>
-      <VSpace v-permission="['plugin:timeline:manage']">
+      <VSpace v-permission="['plugin:bingewatching:manage']">
         <VButton
           type="secondary"
           @click="editingModal = true"
@@ -208,7 +192,7 @@ onMounted(() => {
         <div class="block w-full bg-gray-50 px-4 py-3">
           <div class="relative flex flex-col flex-wrap items-start gap-4 sm:flex-row sm:items-center">
             <div
-              v-permission="['plugin:timeline:manage']"
+              v-permission="['plugin:bingewatching:manage']"
               class="hidden items-center sm:flex"
             >
               <input
@@ -219,7 +203,7 @@ onMounted(() => {
             </div>
             <div class="flex w-full flex-1 items-center sm:w-auto">
               <FormKit
-                v-if="!selectedTimelines.length"
+                v-if="!selectedMovies.length"
                 v-model="searchText"
                 placeholder="输入关键词搜索"
                 type="text"
@@ -237,7 +221,7 @@ onMounted(() => {
                   </div>
                 </template>
               </FormKit>
-              <VSpace v-else v-permission="['plugin:timeline:manage']">
+              <VSpace v-else v-permission="['plugin:bingewatching:manage']">
                 <VButton type="danger" @click="handleDeleteInBatch">
                   删除
                 </VButton>
@@ -250,8 +234,8 @@ onMounted(() => {
               />
               <FilterDropdown
                 v-model="selectedType"
-                label="类型"
-                :items="timelineTypes"
+                label="状态"
+                :items="movieStatus"
               />
               <FilterDropdown
                 v-model="selectedSort"
@@ -289,10 +273,10 @@ onMounted(() => {
 
       <VLoading v-if="isLoading" />
 
-      <Transition v-else-if="!timelines?.length" appear name="fade">
+      <Transition v-else-if="!movies?.length" appear name="fade">
         <VEmpty
-          title="暂无时间线记录"
-          message="暂无时间线记录"
+          title="暂无影视记录"
+          message="暂无影视记录"
         >
           <template #actions>
             <VSpace>
@@ -308,7 +292,7 @@ onMounted(() => {
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th
-                  v-permission="['plugin:timeline:manage']"
+                  v-permission="['plugin:bingewatching:manage']"
                   scope="col"
                   class="px-4 py-3"
                 >
@@ -318,22 +302,22 @@ onMounted(() => {
                   <div class="w-max flex items-center">名称</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
-                  <div class="w-max flex items-center">图片</div>
+                  <div class="w-max flex items-center">海报</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
                   <div class="w-max flex items-center">类型</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
-                  <div class="w-max flex items-center">时间</div>
+                  <div class="w-max flex items-center">已看集数</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
-                  <div class="w-max flex items-center">描述</div>
+                  <div class="w-max flex items-center">更新周期</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
-                  <div class="w-max flex items-center">关联文章</div>
+                  <div class="w-max flex items-center">状态</div>
                 </th>
                 <th
-                  v-permission="['plugin:timeline:manage']"
+                  v-permission="['plugin:bingewatching:manage']"
                   scope="col"
                   class="px-4 py-3"
                 >
@@ -343,49 +327,43 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr
-                v-for="timeline in timelines"
-                :key="timeline.metadata.name"
+                v-for="movie in movies"
+                :key="movie.metadata.name"
                 class="border-b last:border-none hover:bg-gray-100"
               >
-                <td class="px-4 py-4" v-permission="['plugin:timeline:manage']">
+                <td class="px-4 py-4" v-permission="['plugin:bingewatching:manage']">
                   <input
-                    v-model="selectedTimelines"
-                    :value="timeline.metadata.name"
+                    v-model="selectedMovies"
+                    :value="movie.metadata.name"
                     class="h-4 w-4 rounded border-gray-300 text-indigo-600"
-                    name="timeline-checkbox"
+                    name="movie-checkbox"
                     type="checkbox"
                   />
                 </td>
-                <td class="px-4 py-4">{{ timeline.spec.title }}</td>
+                <td class="px-4 py-4">{{ movie.spec.vod_name }}</td>
                 <td class="px-4 py-4 poster">
                   <img
-                    v-if="timeline.spec.illustrated"
-                    :src="timeline.spec.illustrated"
-                    :alt="timeline.spec.title"
+                    v-if="movie.spec.vod_pic"
+                    :src="movie.spec.vod_pic"
+                    :alt="movie.spec.vod_name"
                     referrerpolicy="no-referrer"
                   />
                   <span v-else>-</span>
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ timeline.spec.type}}
+                  {{ movie.spec.type_name || '-' }}
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ timeline.spec.timestamp }}
+                  {{ movie.spec.seen }}
                 </td>
-                <td class="px-4 py-4">{{ timeline.spec.description || '-' }}</td>
                 <td class="px-4 py-4 table-td">
-                  <a
-                    v-if="timeline.spec.relatedArticle"
-                    :href="timeline.spec.relatedArticle"
-                    target="_blank"
-                    class="text-green-600 hover:underline"
-                  >
-                    查看文章
-                  </a>
-                  <span v-else>-</span>
+                  {{ movie.spec.updateCycle }}
                 </td>
-                <td class="px-4 py-4 table-td" v-permission="['plugin:timeline:manage']">
-                  <VDropdownItem @click="handleOpenCreateModal(timeline)">
+                <td class="px-4 py-4 table-td">
+                  {{ movie.spec.status || '-' }}
+                </td>
+                <td class="px-4 py-4 table-td" v-permission="['plugin:bingewatching:manage']">
+                  <VDropdownItem @click="handleOpenCreateModal(movie)">
                     编辑
                   </VDropdownItem>
                 </td>
@@ -433,3 +411,4 @@ onMounted(() => {
   text-overflow: ellipsis;
 }
 </style> 
+

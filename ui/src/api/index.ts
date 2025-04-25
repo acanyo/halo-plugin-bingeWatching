@@ -1,7 +1,6 @@
 import type {AxiosInstance} from "axios";
 import axios from "axios";
-import type {Timeline} from "./generated";
-import {TimelineType} from "./generated";
+import type {HandsomeMovie} from "./generated";
 import {consoleApiClient} from "@halo-dev/api-client";
 
 export interface Option {
@@ -9,44 +8,40 @@ export interface Option {
   value: string;
 }
 
-export interface TimelineList {
+export interface HandsomeMovieList {
   page: number;
   size: number;
   total: number;
-  items: Timeline[];
+  items: HandsomeMovie[];
 }
 
-export class TimelineApi {
+export class HandsomeMovieApi {
   private axios: AxiosInstance;
-  private baseUrl: string = "/apis/timeline.lik.cc/v1alpha1";
+  private baseUrl: string = "/apis/bingewatching.lik.cc/v1alpha1";
 
   constructor(axios: AxiosInstance) {
     this.axios = axios;
   }
 
   /**
-   * 获取时间线列表
+   * 获取影视列表
    */
-  async listTimelines(params?: {
+  async listHandsomeMovies(params?: {
     page?: number;
     size?: number;
     keyword?: string;
     sort?: string[];
-    status?: string;
-    type?: TimelineType;
-    pinned?: boolean;
-  }): Promise<TimelineList> {
+    type?: string;
+  }): Promise<HandsomeMovieList> {
     const { data } = await this.axios.get(
-      `${this.baseUrl}/timeline`,
+      `${this.baseUrl}/handsomemovies`,
       {
         params: {
           page: params?.page || 1,
           size: params?.size || 20,
           keyword: params?.keyword,
           sort: params?.sort,
-          status: params?.status,
           type: params?.type,
-          pinned: params?.pinned,
         },
       }
     );
@@ -54,74 +49,74 @@ export class TimelineApi {
   }
 
   /**
-   * 获取单个时间线
+   * 获取单个影视
    */
-  async getTimeline(name: string): Promise<Timeline> {
+  async getHandsomeMovie(name: string): Promise<HandsomeMovie> {
     const { data } = await this.axios.get(
-      `${this.baseUrl}/timeline/${name}`
+      `${this.baseUrl}/handsomemovies/${name}`
     );
     return data;
   }
 
   /**
-   * 创建时间线
+   * 创建影视
    */
-  async createTimeline(timeline: Timeline): Promise<Timeline> {
+  async createHandsomeMovie(handsomeMovie: HandsomeMovie): Promise<HandsomeMovie> {
     const { data } = await this.axios.post(
-      `${this.baseUrl}/timeline`,
-      timeline
+      `${this.baseUrl}/handsomemovies`,
+      handsomeMovie
     );
     return data;
   }
 
   /**
-   * 更新时间线
+   * 更新影视
    */
-  async updateTimeline(name: string, timeline: Timeline): Promise<Timeline> {
+  async updateHandsomeMovie(name: string, handsomeMovie: HandsomeMovie): Promise<HandsomeMovie> {
     const { data } = await this.axios.put(
-      `${this.baseUrl}/timeline/${name}`,
-      timeline
+      `${this.baseUrl}/handsomemovies/${name}`,
+      handsomeMovie
     );
     return data;
   }
 
   /**
-   * 删除时间线
+   * 删除影视
    */
-  async deleteTimeline(name: string): Promise<void> {
-    await this.axios.delete(`${this.baseUrl}/timeline/${name}`);
+  async deleteHandsomeMovie(name: string): Promise<void> {
+    await this.axios.delete(`${this.baseUrl}/handsomemovies/${name}`);
   }
 
   /**
-   * 批量删除时间线
+   * 批量删除影视
    */
-  async deleteTimelines(names: string[]): Promise<void> {
-    const promises = names.map((name) => this.deleteTimeline(name));
+  async deleteHandsomeMovies(names: string[]): Promise<void> {
+    const promises = names.map((name) => this.deleteHandsomeMovie(name));
     await Promise.all(promises);
   }
 
   /**
-   * 获取时间线类型列表
+   * 获取影视类型列表
    */
-  async listTimelineTypes(): Promise<Option[]> {
+  async listHandsomeMovieStatus(): Promise<Option[]> {
     try {
       const { data } = await consoleApiClient.plugin.plugin.fetchPluginConfig({
-        name: 'timeline'
+        name: 'handsomemovies'
       });
 
       const { advanced } = data?.data ?? {};
-      const { timelineTypes = [] } = advanced ? JSON.parse(advanced) : {};
+      const { listMovieStatus = [] } = advanced ? JSON.parse(advanced) : {};
 
-      return timelineTypes.map((type: string) => ({
+      return listMovieStatus.map((type: string) => ({
         label: type,
         value: type
       }));
     } catch (error) {
-      console.error("Failed to fetch timeline config:", error);
+      console.error("Failed to fetch handsomemovies config:", error);
       return [];
     }
   }
 }
 
 // 创建实例并导出
-export const timelineApi = new TimelineApi(axios.create()); 
+export const handsomeMovieApi = new HandsomeMovieApi(axios.create()); 

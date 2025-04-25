@@ -1,7 +1,7 @@
 import {definePlugin} from "@halo-dev/console-shared";
-import TimelineView from "./views/Timeline.vue";
+import BingeWatchingView from "./views/BingeWatching.vue";
 import {markRaw} from "vue";
-import IconParkTimeline from '~icons/icons8/timeline';
+import MovieIcon from '~icons/icon-park-outline/movie';
 
 export default definePlugin({
   components: {},
@@ -12,25 +12,25 @@ export default definePlugin({
         path: "/bingeWatching",
         name: "BingeWatchingRoot",
         meta: {
-          title: "时间线",
+          title: "追剧管理",
           searchable: true,
-          permissions: ["plugin:timeline:view"],
+          permissions: ["plugin:bingewatching:view"],
           menu: {
-            name: "时间线",
+            name: "追剧管理",
             group: "content",
-            icon: markRaw(IconParkTimeline),
+            icon: markRaw(MovieIcon),
             priority: 20,
           },
         },
         children: [
           {
             path: "",
-            name: "Timeline",
-            component: TimelineView,
+            name: "BingeWatching",
+            component: BingeWatchingView,
             meta: {
-              title: "时间线",
+              title: "追剧管理",
               searchable: true,
-              permissions: ["plugin:timeline:view"],
+              permissions: ["plugin:bingewatching:view"],
             },
           }
         ]

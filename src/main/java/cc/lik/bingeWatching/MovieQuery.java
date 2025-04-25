@@ -55,7 +55,7 @@ public class MovieQuery extends SortableRequest {
 
         Optional.ofNullable(getTimelineType())
             .filter(StringUtils::isNotBlank)
-            .ifPresent(type -> builder.andQuery(equal("spec.type", type)));
+            .ifPresent(type -> builder.andQuery(equal("spec.status", type)));
         return builder.build();
     }
 

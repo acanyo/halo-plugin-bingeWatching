@@ -40,6 +40,11 @@ public class BingeWatchingPlugin extends BasePlugin {
                     simpleAttribute(HandsomeMovie.class,
                         movie -> movie.getSpec().getVod_en())));
             indexSpecs.add(new IndexSpec()
+                .setName("spec.status")
+                .setIndexFunc(
+                    simpleAttribute(HandsomeMovie.class,
+                        movie -> movie.getSpec().getStatus())));
+            indexSpecs.add(new IndexSpec()
                 .setName("spec.vod_content")
                 .setIndexFunc(
                     simpleAttribute(HandsomeMovie.class,

@@ -39,10 +39,12 @@ public class HandsomeMovie extends AbstractExtension {
         private String vod_content;
         @Schema(description = "影视类型")
         private String type_name;
-        @Schema(description = "已看集数")
+        @Schema(description = "已看集数", requiredMode = REQUIRED)
         private String seen;
-        @Schema(description = "更新周期/周")
+        @Schema(description = "更新周期/周", requiredMode = REQUIRED)
         private String updateCycle;
+        @Schema(description = "追剧状态")
+        private String status;
 
     }
 }
