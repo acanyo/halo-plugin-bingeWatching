@@ -1,41 +1,38 @@
 apiVersion: v1alpha1
-kind: Role
+kind: "Role"
 metadata:
-  name: role-template-bingeWatching-view
+  name: role-template-manage-bingewatching
   labels:
     halo.run/role-template: "true"
   annotations:
-    rbac.authorization.halo.run/module: "时间轴"
-    rbac.authorization.halo.run/display-name: "时间轴查看"
+    rbac.authorization.halo.run/dependencies: |
+      [ "role-template-view-bingewatching" ]
+    rbac.authorization.halo.run/module: "追剧"
+    rbac.authorization.halo.run/display-name: "追剧管理"
     rbac.authorization.halo.run/ui-permissions: |
-      ["plugin:bingeWatching:view"]
+      ["plugin:bingewatching:manage"]
 rules:
-  - apiGroups: [ "bingeWatching.lik.cc" ]
-    resources: [ "bingeWatchingvies"]
-    verbs: [ "get", "list" ]
+  - apiGroups: [ "bingewatching.lik.cc" ]
+    resources: [ "handsomemovies" ]
+    verbs: [ "create", "patch", "update", "delete", "deletecollection" ]
 
 ---
 
 apiVersion: v1alpha1
-kind: Role
+kind: "Role"
 metadata:
-  name: role-template-bingeWatching-manage
+  name: role-template-view-bingewatching
   labels:
     halo.run/role-template: "true"
   annotations:
-    rbac.authorization.halo.run/module: "时间轴"
-    rbac.authorization.halo.run/display-name: "时间轴管理"
+    rbac.authorization.halo.run/module: "追剧"
+    rbac.authorization.halo.run/display-name: "追剧查看"
     rbac.authorization.halo.run/ui-permissions: |
-      ["plugin:bingeWatching:manage"]
-    rbac.authorization.halo.run/dependencies: |
-      ["role-template-bingeWatching-view"]
+      ["plugin:bingewatching:view"]
 rules:
-  - apiGroups: [ "bingeWatching.lik.cc" ]
-    resources: [ "bingeWatchingvies"]
-    verbs: [ "create", "patch", "update", "delete", "deletecollection" ]
-  - nonResourceURLs: [
-    "/apis/api.plugin.halo.run/v1alpha1/plugins/plugin-bingeWatching/bingeWatching/*"
-    "/apis/api.plugin.halo.run/v1alpha1/plugins/plugin-bingeWatching/handsomemovie/*"
-    "/apis/api.plugin.halo.run/v1alpha1/plugins/plugin-bingeWatching/movies/*"
-  ]
-    verbs: [ "create" , "delete" ]
+  - apiGroups: [ "bingewatching.lik.cc" ]
+    resources: [ "handsomemovies" ]
+    verbs: [ "get", "list" ]
+  - apiGroups: [ "api.bingewatching.lik.cc" ]
+    resources: [ "movies" ]
+    verbs: [ "list" ]

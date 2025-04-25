@@ -15,7 +15,7 @@ import static io.swagger.v3.oas.annotations.media.Schema.RequiredMode.REQUIRED;
 @ToString
 @EqualsAndHashCode(callSuper = true)
 @GVK(kind = "HandsomeMovie", group = "bingewatching.lik.cc",
-    version = "v1alpha1", singular = "handsomemovie", plural = "handsomemovie")
+    version = "v1alpha1", singular = "handsomemovie", plural = "handsomemovies")
 public class HandsomeMovie extends AbstractExtension {
     @Schema(requiredMode = REQUIRED)
     private HandsomeMovieSpec spec;

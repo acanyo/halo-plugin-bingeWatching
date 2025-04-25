@@ -27,7 +27,7 @@ public class MovieEndpoint implements CustomEndpoint {
     private final ProvideService provideSvc;
     @Override
     public RouterFunction<ServerResponse> endpoint() {
-        final var tag = "api.handsomemovie.lik.cc/v1alpha1/movies";
+        final var tag = "api.bingewatching.lik.cc/v1alpha1/bingewatching";
         return SpringdocRouteBuilder.route()
             .GET("movies", this::listMovie, builder -> {
                     builder.operationId("List movies")
@@ -40,7 +40,7 @@ public class MovieEndpoint implements CustomEndpoint {
                 MovieQuery.buildParameters(builder);
                 }
             )
-            .GET("movies/{name}", this::getMovieByName, builder -> {
+            .GET("movies/-/{name}", this::getMovieByName, builder -> {
                     builder.operationId("Get movie by name")
                         .tag(tag)
                         .description("根据名称获取电影")
@@ -78,6 +78,6 @@ public class MovieEndpoint implements CustomEndpoint {
 
     @Override
     public GroupVersion groupVersion() {
-        return GroupVersion.parseAPIVersion("api.handsomemovie.lik.cc/v1alpha1");
+        return GroupVersion.parseAPIVersion("api.bingewatching.lik.cc/v1alpha1");
     }
 }
