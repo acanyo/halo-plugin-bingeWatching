@@ -1,8 +1,14 @@
 package cc.lik.bingeWatching;
 
+import cc.lik.bingeWatching.entity.HandsomeMovie;
 import org.springframework.stereotype.Component;
+import run.halo.app.extension.Scheme;
+import run.halo.app.extension.SchemeManager;
+import run.halo.app.extension.index.IndexSpec;
 import run.halo.app.plugin.BasePlugin;
 import run.halo.app.plugin.PluginContext;
+
+import static run.halo.app.extension.index.IndexAttributeFactory.simpleAttribute;
 
 /**
  * <p>Plugin main class to manage the lifecycle of the plugin.</p>
@@ -14,18 +20,35 @@ import run.halo.app.plugin.PluginContext;
  */
 @Component
 public class BingeWatchingPlugin extends BasePlugin {
-
-    public BingeWatchingPlugin(PluginContext pluginContext) {
+    private final SchemeManager schemeManager;
+    public BingeWatchingPlugin(PluginContext pluginContext, SchemeManager schemeManager) {
         super(pluginContext);
+        this.schemeManager = schemeManager;
     }
 
     @Override
     public void start() {
-        System.out.println("插件启动成功！");
+        schemeManager.register(HandsomeMovie.class, indexSpecs -> {
+            indexSpecs.add(new IndexSpec()
+                .setName("spec.vod_name")
+                .setIndexFunc(
+                    simpleAttribute(HandsomeMovie.class,
+                        movie -> movie.getSpec().getVod_name())));
+            indexSpecs.add(new IndexSpec()
+                .setName("spec.vod_en")
+                .setIndexFunc(
+                    simpleAttribute(HandsomeMovie.class,
+                        movie -> movie.getSpec().getVod_en())));
+            indexSpecs.add(new IndexSpec()
+                .setName("spec.vod_content")
+                .setIndexFunc(
+                    simpleAttribute(HandsomeMovie.class,
+                        movie -> movie.getSpec().getVod_content())));
+        });
     }
 
     @Override
     public void stop() {
-        System.out.println("插件停止！");
+        schemeManager.unregister(Scheme.buildFromType(HandsomeMovie.class));
     }
 }

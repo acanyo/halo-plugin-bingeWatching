@@ -21,19 +21,28 @@ public class HandsomeMovie extends AbstractExtension {
     private HandsomeMovieSpec spec;
     @Data
     public static class HandsomeMovieSpec {
-
-        private String name;
-        private String poster;
-        private String link;
-        private String id;
-        private String score;
-        private String year;
-        private String type;
-        private String pubdate;
-        private String cardSubtitle;
-        private String dataType;
-
-        private Set<String> genres;
+        @Schema(description = "影视名称", requiredMode = REQUIRED)
+        private String vod_name;
+        @Schema(description = "英文名称")
+        private String vod_en;
+        @Schema(description = "影视图片", requiredMode = REQUIRED)
+        private String vod_pic;
+        @Schema(description = "影视演员")
+        private String vod_actor;
+        @Schema(description = "地区语言")
+        private String vod_lang;
+        @Schema(description = "影视年份")
+        private String vod_year;
+        @Schema(description = "影视评分")
+        private String vod_score;
+        @Schema(description = "影视描述")
+        private String vod_content;
+        @Schema(description = "影视类型")
+        private String type_name;
+        @Schema(description = "已看集数")
+        private String seen;
+        @Schema(description = "更新周期/周")
+        private String updateCycle;
 
     }
 }

@@ -1,0 +1,139 @@
+package cc.lik.bingeWatching.service.impl;
+
+import cc.lik.bingeWatching.MovieQuery;
+import cc.lik.bingeWatching.entity.HandsomeMovie;
+import cc.lik.bingeWatching.service.ProvideService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
+import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import run.halo.app.extension.ListOptions;
+import run.halo.app.extension.ListResult;
+import run.halo.app.extension.PageRequestImpl;
+import run.halo.app.extension.ReactiveExtensionClient;
+import run.halo.app.extension.router.selector.FieldSelector;
+
+import java.util.List;
+
+import static run.halo.app.extension.index.query.QueryFactory.all;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class ProvideServiceImpl implements ProvideService {
+    private final ReactiveExtensionClient client;
+    private final WebClient.Builder webClientBuilder;
+    private final ObjectMapper objectMapper; // 注入 ObjectMapper 用于处理 JSON
+
+    private static final List<String> REQUIRED_FIELDS = List.of(
+        "vod_name", "vod_en", "vod_pic", "vod_actor", "vod_lang", "vod_year", "vod_score", "vod_content", "type_name"
+    );
+
+    @Override
+    public Mono<JsonNode> getProvideMovieList(String vod_name) {
+        String vod_URL = "https://www.heimuer.tv";
+        WebClient webClient = webClientBuilder.baseUrl(vod_URL).build();
+        String MOVIE_LIST_PATH = "/api.php/provide/vod/";
+        String uri = UriComponentsBuilder.fromPath(MOVIE_LIST_PATH)
+            .queryParam("ac", "videolist")
+            .queryParam("wd", vod_name)
+            .build()
+            .toUriString();
+        return webClient.get()
+            .uri(uri)
+            .accept(MediaType.APPLICATION_JSON)
+            .header(HttpHeaders.USER_AGENT, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36")
+            .retrieve()
+            .bodyToMono(String.class)
+            .flatMap(responseBody -> {
+                try {
+                    JsonNode jsonResponse = objectMapper.readTree(responseBody);
+                    JsonNode listNode = jsonResponse.path("list");
+                    ArrayNode filteredList = objectMapper.createArrayNode();
+                    int total = 0;
+                    if (listNode.isArray()) {
+                        total = listNode.size();
+                        for (JsonNode movieNode : listNode) {
+                            boolean hasAnyRequiredField = false;
+                            for (String field : REQUIRED_FIELDS) {
+                                if (movieNode.has(field)) {
+                                    hasAnyRequiredField = true;
+                                    break;
+                                }
+                            }
+
+                            if (!hasAnyRequiredField) {
+                                continue;
+                            }
+
+                            ObjectNode filteredMovie = objectMapper.createObjectNode();
+                            REQUIRED_FIELDS.forEach(field -> {
+                                if (movieNode.has(field)) {
+                                    filteredMovie.set(field, movieNode.get(field));
+                                }
+                            });
+                            filteredList.add(filteredMovie);
+                        }
+                    }
+                    // 构建成功响应体
+                    ObjectNode successResponse = objectMapper.createObjectNode();
+                    successResponse.put("error", false);
+                    successResponse.put("message", "请求成功");
+                    successResponse.put("total", filteredList.size()); 
+                    successResponse.set("data", filteredList);
+                    return Mono.just((JsonNode) successResponse);
+                } catch (Exception e) {
+                    ObjectNode errorNode = objectMapper.createObjectNode();
+                    errorNode.put("error", true);
+                    errorNode.put("message", "获取电影列表失败: 响应内容不是有效的JSON格式 (Content-Type: text/html).");
+                    errorNode.put("errorType", e.getClass().getName());
+                    errorNode.put("total", 0);
+                    errorNode.set("data", objectMapper.createArrayNode());
+                    return Mono.just(errorNode);
+                }
+            }).onErrorResume(error -> { // 处理其他所有错误 (如网络错误)
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("error", true);
+                String message = "获取电影列表失败: " + error.getMessage();
+                if (error instanceof WebClientResponseException wcre) {
+                    message = String.format("获取电影列表失败: HTTP %d. %s",
+                        wcre.getStatusCode().value(), wcre.getResponseBodyAsString());
+                }
+                errorNode.put("message", message);
+                errorNode.put("errorType", error.getClass().getName());
+                errorNode.put("total", 0);
+                errorNode.set("data", objectMapper.createArrayNode());
+                return Mono.just(errorNode);
+            });
+    }
+
+    @Override
+    public Mono<ListResult<HandsomeMovie>> listMovie(MovieQuery query) {
+        return client.listBy(HandsomeMovie.class, query.toListOptions(),
+            PageRequestImpl.of(query.getPage(), query.getSize(), query.getSort()));
+    }
+
+    @Override
+    public Flux<HandsomeMovie> listAll() {
+        var listOptions = new ListOptions();
+        var query = all();
+        listOptions.setFieldSelector(FieldSelector.of(query));
+        return client.listAll(HandsomeMovie.class, listOptions, defaultSort())
+            .flatMap(Mono::just);
+    }
+    static Sort defaultSort() {
+        return Sort.by("metadata.creationTimestamp").descending();
+    }
+}
