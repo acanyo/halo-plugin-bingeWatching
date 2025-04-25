@@ -18,6 +18,7 @@ import {computed, ref, watch, onMounted} from "vue";
 import {formatDatetime} from "@/utils/date";
 import {useRouteQuery} from "@vueuse/router";
 import MovieEditingModal from "../components/MovieEditingModal.vue";
+import MovieSyncModal from "../components/MovieSyncModal.vue";
 import {handsomeMovieApi} from "@/api";
 import type {HandsomeMovie} from "@/api/generated";
 import IconParkMovie from '~icons/icon-park-outline/movie';
@@ -46,6 +47,7 @@ const keyword = ref("");
 const searchText = ref("");
 const total = ref(0);
 const editingModal = ref(false);
+const syncModal = ref(false);
 
 watch(
   () => [selectedSort.value, selectedType.value, keyword.value],
@@ -161,6 +163,14 @@ const onEditingModalClose = async () => {
   refetch();
 };
 
+const handleOpenSyncModal = () => {
+  syncModal.value = true;
+};
+
+const onSyncModalClose = async () => {
+  refetch();
+};
+
 onMounted(() => {
   // No need to fetch movie status as it's no longer fetched
 });
@@ -172,6 +182,10 @@ onMounted(() => {
     :movie="selectedMovie"
     @close="onEditingModalClose"
   />
+  <MovieSyncModal
+    v-model:visible="syncModal"
+    @close="onSyncModalClose"
+  />
 
   <VPageHeader title="影视管理">
     <template #icon>
@@ -179,6 +193,15 @@ onMounted(() => {
     </template>
     <template #actions>
       <VSpace v-permission="['plugin:bingewatching:manage']">
+        <VButton
+          type="secondary"
+          @click="handleOpenSyncModal"
+        >
+          <template #icon>
+            <IconRefreshLine class="h-full w-full" />
+          </template>
+          同步影视
+        </VButton>
         <VButton
           type="secondary"
           @click="handleOpenCreateModal"

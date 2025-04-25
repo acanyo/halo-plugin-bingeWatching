@@ -37,24 +37,37 @@ spec:
             style:
               margin-left: "80px"
         - $formkit: text
-          label: 时间轴
+          label: 网站标题
           name: title
           validation: required
-          value: '时间轴'
+          value: '追剧日常'
           help: "这里是你的网址标题"
-        - $formkit: range
-          label: '背景透明度(0为完全透明, 1为不透明)'
-          id: opacity_val
-          name: opacity_val
-          value: '0.5'
-          min: 0
-          step: 0.05
-          max: 1
-          help: $get(opacity_val).value
-        - $formkit: attachment
-          label: 背景图片
-          name: bgImages
-          id: bgImages
-          key: bgImages
-          value: "https://assets.codepen.io/3364143/7btrrd.mp4"
-          help: 支持视频背景和图片
+
+    - group:
+      label: 基本设置
+      formSchema:
+        - $formkit: text
+          label: 页面标题
+          name: title
+          validation: required
+          value: '友链朋友圈'
+        - $formkit: text
+          label: 朋友圈列表显示条数
+          name: pageSize
+          validation: required|Number
+          value: 10
+        - $formkit: select
+          name: disableSynchronizationList
+          label: 禁止同步名单
+          multiple: true
+          clearable: true
+          searchable: true
+          action: /apis/api.plugin.halo.run/v1alpha1/plugins/PluginLinks/links
+          requestOption:
+            method: GET
+            pageField: page
+            sizeField: size
+            totalField: total
+            itemsField: items
+            labelField: spec.displayName
+            valueField: metadata.name
