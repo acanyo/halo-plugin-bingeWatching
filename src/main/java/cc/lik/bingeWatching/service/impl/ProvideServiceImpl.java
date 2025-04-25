@@ -62,9 +62,7 @@ public class ProvideServiceImpl implements ProvideService {
                     JsonNode jsonResponse = objectMapper.readTree(responseBody);
                     JsonNode listNode = jsonResponse.path("list");
                     ArrayNode filteredList = objectMapper.createArrayNode();
-                    int total = 0;
                     if (listNode.isArray()) {
-                        total = listNode.size();
                         for (JsonNode movieNode : listNode) {
                             boolean hasAnyRequiredField = false;
                             for (String field : REQUIRED_FIELDS) {
