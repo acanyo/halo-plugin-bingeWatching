@@ -7,7 +7,6 @@ import {
   Toast,
   VButton,
   VCard,
-  VDropdownItem,
   VEmpty,
   VLoading,
   VPageHeader,
@@ -22,6 +21,7 @@ import MovieEditingModal from "../components/MovieEditingModal.vue";
 import {handsomeMovieApi} from "@/api";
 import type {HandsomeMovie} from "@/api/generated";
 import IconParkMovie from '~icons/icon-park-outline/movie';
+import IconParkEdit from '~icons/icon-park-outline/edit';
 
 defineOptions({
   name: "MovieView",
@@ -127,10 +127,11 @@ const handleDeleteInBatch = () => {
         selectedMovies.value.length = 0;
         checkedAll.value = false;
         Toast.success("删除成功");
+        refetch();
       } catch (e) {
         console.error(e);
       } finally {
-        await refetch();
+        refetch();
       }
     },
   });
@@ -145,7 +146,12 @@ function onKeywordChange() {
   keyword.value = searchText.value;
 }
 
-const handleOpenCreateModal = (movie?: HandsomeMovie) => {
+const handleOpenCreateModal = () => {
+  selectedMovie.value = undefined;
+  editingModal.value = true;
+};
+
+const handleEditMovie = (movie: HandsomeMovie) => {
   selectedMovie.value = movie;
   editingModal.value = true;
 };
@@ -163,7 +169,7 @@ onMounted(() => {
 <template>
   <MovieEditingModal
     v-model:visible="editingModal"
-    :timeline="selectedMovie"
+    :movie="selectedMovie"
     @close="onEditingModalClose"
   />
 
@@ -175,7 +181,7 @@ onMounted(() => {
       <VSpace v-permission="['plugin:bingewatching:manage']">
         <VButton
           type="secondary"
-          @click="editingModal = true"
+          @click="handleOpenCreateModal"
         >
           <template #icon>
             <IconAddCircle class="h-full w-full" />
@@ -308,6 +314,12 @@ onMounted(() => {
                   <div class="w-max flex items-center">类型</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">演员</div>
+                </th>
+                <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center">评分</div>
+                </th>
+                <th scope="col" class="px-4 py-3">
                   <div class="w-max flex items-center">已看集数</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
@@ -351,7 +363,13 @@ onMounted(() => {
                   <span v-else>-</span>
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ movie.spec.type_name || '-' }}
+                  {{ movie.spec.type_name || '暂无类型' }}
+                </td>
+                <td class="px-4 py-4 table-td">
+                  {{ movie.spec.vod_actor || '暂无演员' }}
+                </td>
+                <td class="px-4 py-4 table-td">
+                  {{ movie.spec.vod_score || '暂无评分' }}
                 </td>
                 <td class="px-4 py-4 table-td">
                   {{ movie.spec.seen }}
@@ -360,12 +378,18 @@ onMounted(() => {
                   {{ movie.spec.updateCycle }}
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ movie.spec.status || '-' }}
+                  {{ movie.spec.status || '暂无状态' }}
                 </td>
                 <td class="px-4 py-4 table-td" v-permission="['plugin:bingewatching:manage']">
-                  <VDropdownItem @click="handleOpenCreateModal(movie)">
-                    编辑
-                  </VDropdownItem>
+                  <div class="flex items-center justify-end">
+                    <button
+                      class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+                      @click="handleEditMovie(movie)"
+                      v-tooltip="'编辑'"
+                    >
+                      <IconParkEdit class="h-4 w-4" />
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
