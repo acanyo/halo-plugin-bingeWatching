@@ -1,0 +1,41 @@
+apiVersion: v1alpha1
+kind: Role
+metadata:
+  name: role-template-bingeWatching-view
+  labels:
+    halo.run/role-template: "true"
+  annotations:
+    rbac.authorization.halo.run/module: "时间轴"
+    rbac.authorization.halo.run/display-name: "时间轴查看"
+    rbac.authorization.halo.run/ui-permissions: |
+      ["plugin:bingeWatching:view"]
+rules:
+  - apiGroups: [ "bingeWatching.lik.cc" ]
+    resources: [ "bingeWatchingvies"]
+    verbs: [ "get", "list" ]
+
+---
+
+apiVersion: v1alpha1
+kind: Role
+metadata:
+  name: role-template-bingeWatching-manage
+  labels:
+    halo.run/role-template: "true"
+  annotations:
+    rbac.authorization.halo.run/module: "时间轴"
+    rbac.authorization.halo.run/display-name: "时间轴管理"
+    rbac.authorization.halo.run/ui-permissions: |
+      ["plugin:bingeWatching:manage"]
+    rbac.authorization.halo.run/dependencies: |
+      ["role-template-bingeWatching-view"]
+rules:
+  - apiGroups: [ "bingeWatching.lik.cc" ]
+    resources: [ "bingeWatchingvies"]
+    verbs: [ "create", "patch", "update", "delete", "deletecollection" ]
+  - nonResourceURLs: [
+    "/apis/api.plugin.halo.run/v1alpha1/plugins/plugin-bingeWatching/bingeWatching/*"
+    "/apis/api.plugin.halo.run/v1alpha1/plugins/plugin-bingeWatching/handsomemovie/*"
+    "/apis/api.plugin.halo.run/v1alpha1/plugins/plugin-bingeWatching/movies/*"
+  ]
+    verbs: [ "create" , "delete" ]

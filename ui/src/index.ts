@@ -9,8 +9,8 @@ export default definePlugin({
     {
       parentName: "ToolsRoot",
       route: {
-        path: "/timeline",
-        name: "TimelineRoot",
+        path: "/bingeWatching",
+        name: "BingeWatchingRoot",
         meta: {
           title: "时间线",
           searchable: true,
