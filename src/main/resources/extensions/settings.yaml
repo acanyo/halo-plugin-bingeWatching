@@ -42,27 +42,27 @@ spec:
           validation: required
           value: '追剧日常'
           help: "这里是你的网址标题"
-
-    - group:
-      label: 基本设置
-      formSchema:
-        - $formkit: text
-          label: 页面标题
-          name: title
-          validation: required
-          value: '友链朋友圈'
-        - $formkit: text
-          label: 朋友圈列表显示条数
-          name: pageSize
-          validation: required|Number
-          value: 10
+        - $formkit: checkbox
+          label: 开启图片转存
+          name: enablePicDump
+          id: enablePicDump
+          key: enablePicDump
+          value: true
+          help: "为了防止源站图片失效最好将图片保存至Halo附件库"
+        - $formkit: checkbox
+          if: $get(enablePicDump).value == true
+          label: 图片转存webp
+          name: enablePicWebp
+          id: enablePicWebp
+          key: enablePicWebp
+          value: true
         - $formkit: select
-          name: disableSynchronizationList
-          label: 禁止同步名单
-          multiple: true
-          clearable: true
+          if: $get(enablePicDump).value == true
+          name: fileGroup
+          label: 附件存储策略
           searchable: true
-          action: /apis/api.plugin.halo.run/v1alpha1/plugins/PluginLinks/links
+          help: "用于指定图片转存上传的默认附件存储策略"
+          action: /apis/storage.halo.run/v1alpha1/groups?labelSelector=%21halo.run%2Fhidden&sort=metadata.creationTimestamp%2Cdesc
           requestOption:
             method: GET
             pageField: page
@@ -71,3 +71,35 @@ spec:
             itemsField: items
             labelField: spec.displayName
             valueField: metadata.name
+        - $formkit: select
+          if: $get(enablePicDump).value == true
+          name: filePolicy
+          label: 附件存储组
+          searchable: true
+          help: "用于指定图片转存上传的默认附件存储分组"
+          action: /apis/storage.halo.run/v1alpha1/policies
+          requestOption:
+            method: GET
+            pageField: page
+            sizeField: size
+            totalField: total
+            itemsField: items
+            labelField: spec.displayName
+            valueField: metadata.name
+        - $formkit: radio
+          label: 启用影视搜索代理
+          name: isProxy
+          id: isProxy
+          value: false
+          help: 如果用影视搜索代理源很慢可以自己搭建给反代站点
+          options:
+            - value: true
+              label: 开启
+            - value: false
+              label: 关闭
+        - $formkit: text
+          if: "$get(isProxy).value === true"
+          label: 代理地址
+          name: proxyHost
+          value: ""
+          help: "搭建教程：https://docs.lik.cc/"

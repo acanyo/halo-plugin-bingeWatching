@@ -1,5 +1,7 @@
 package cc.lik.bingeWatching.service.impl;
 
+import static run.halo.app.extension.index.query.QueryFactory.all;
+
 import cc.lik.bingeWatching.MovieQuery;
 import cc.lik.bingeWatching.entity.HandsomeMovie;
 import cc.lik.bingeWatching.service.ProvideService;
@@ -7,11 +9,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.MediaType;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -23,10 +26,6 @@ import run.halo.app.extension.ListResult;
 import run.halo.app.extension.PageRequestImpl;
 import run.halo.app.extension.ReactiveExtensionClient;
 import run.halo.app.extension.router.selector.FieldSelector;
-
-import java.util.List;
-
-import static run.halo.app.extension.index.query.QueryFactory.all;
 
 @Slf4j
 @Service
