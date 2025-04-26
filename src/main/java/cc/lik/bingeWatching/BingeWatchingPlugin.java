@@ -1,5 +1,7 @@
 package cc.lik.bingeWatching;
 
+import static run.halo.app.extension.index.IndexAttributeFactory.simpleAttribute;
+
 import cc.lik.bingeWatching.entity.HandsomeMovie;
 import org.springframework.stereotype.Component;
 import run.halo.app.extension.Scheme;
@@ -7,8 +9,6 @@ import run.halo.app.extension.SchemeManager;
 import run.halo.app.extension.index.IndexSpec;
 import run.halo.app.plugin.BasePlugin;
 import run.halo.app.plugin.PluginContext;
-
-import static run.halo.app.extension.index.IndexAttributeFactory.simpleAttribute;
 
 /**
  * <p>Plugin main class to manage the lifecycle of the plugin.</p>
