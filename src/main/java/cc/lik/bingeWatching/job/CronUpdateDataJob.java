@@ -5,7 +5,9 @@ import cc.lik.bingeWatching.vo.HandsomeMovieVo;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -30,18 +32,20 @@ public class CronUpdateDataJob {
         client.list(HandsomeMovie.class, movie -> {
             String status = movie.getSpec().getStatus();
             String updateCycle = movie.getSpec().getUpdateCycle();
-            if (!"观看中".equals(status) || updateCycle == null || updateCycle.isBlank()) {
+            String seen = movie.getSpec().getSeen();
+            if (!"观看中".equals(status) || updateCycle == null || updateCycle.isBlank()
+                || seen == null || seen.isBlank()) {
                 return false;
             }
-            return java.util.Arrays.stream(updateCycle.split(","))
+            return Arrays.stream(updateCycle.split(","))
                     .map(String::trim)
                     .anyMatch(day -> day.equals(String.valueOf(currentDayOfWeek)));
         }, null)
         .flatMap(movie -> {
             try {
-                String currentSeen = movie.getSpec().getSeen();
-                int seen = Integer.parseInt(currentSeen);
-                movie.getSpec().setSeen(String.valueOf(seen + 1));
+                String currentSeen = Optional.ofNullable(movie.getSpec().getNewSeen()).orElse("0");
+                int newSpec = Integer.parseInt(currentSeen);
+                movie.getSpec().setNewSeen(String.valueOf(newSpec+1));
                 return client.update(movie);
             } catch (NumberFormatException e) {
                 log.error("更新电影集数失败，当前集数格式错误: {}", movie.getSpec().getSeen(), e);

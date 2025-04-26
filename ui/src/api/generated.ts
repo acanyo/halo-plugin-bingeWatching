@@ -20,8 +20,10 @@ export interface HandsomeMovie {
     vod_content?: string;
     type_name?: string;
     seen: string;
+    newSeen?: string;
     updateCycle: string;
     status?: string;
+    classicLines?: string[];
   };
 }
 

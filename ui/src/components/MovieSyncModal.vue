@@ -96,9 +96,7 @@ watch(
 
 const isFormValid = computed(() => {
   if (!formState.value.vod_name?.trim()) return false;
-  if (!formState.value.updateCycle?.trim()) return false;
-  return formState.value.seen?.trim();
-  
+  return true;
 });
 
 const handleSelectMovie = (movie: MovieInfo) => {
@@ -158,14 +156,6 @@ const handleSyncMovie = async () => {
   if (!isFormValid.value) {
     if (!formState.value.vod_name?.trim()) {
       Toast.error("影视名称不能为空");
-      return;
-    }
-    if (!formState.value.updateCycle?.trim()) {
-      Toast.error("更新周期不能为空");
-      return;
-    }
-    if (!formState.value.seen?.trim()) {
-      Toast.error("已看集数不能为空");
       return;
     }
     Toast.error("请检查表单填写是否正确");
@@ -271,8 +261,6 @@ const handleSyncMovie = async () => {
             type="select"
             name="updateCycle"
             label="更新周期"
-            validation="required"
-            :validation-messages="validationMessages"
             :options="updateCycleOptions"
             placeholder="请选择更新周期"
             help="选择正确的更新周期有助于追踪最新剧集"
@@ -284,7 +272,7 @@ const handleSyncMovie = async () => {
             type="number"
             name="seen"
             label="已看集数"
-            validation="required|number|matches:/^[0-9]+$/"
+            validation="number|matches:/^[0-9]+$/"
             :validation-messages="validationMessages"
             placeholder="请输入已观看集数 比如 12"
             help="可以输入具体集数，如'12' 必须是纯数字"

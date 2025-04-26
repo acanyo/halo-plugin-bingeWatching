@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import run.halo.app.extension.AbstractExtension;
 import run.halo.app.extension.GVK;
+import java.util.List;
 
 @Data
 @ToString
@@ -37,12 +38,16 @@ public class HandsomeMovie extends AbstractExtension {
         private String vod_content;
         @Schema(description = "影视类型")
         private String type_name;
-        @Schema(description = "已看集数", requiredMode = REQUIRED)
+        @Schema(description = "已看集数")
         private String seen;
-        @Schema(description = "更新周期/周", requiredMode = REQUIRED)
+        @Schema(description = "更新集数")
+        private String newSeen;
+        @Schema(description = "更新周期/周")
         private String updateCycle;
         @Schema(description = "追剧状态")
         private String status;
+        @Schema(description = "经典台词")
+        private List<String> classicLines;
 
     }
 }

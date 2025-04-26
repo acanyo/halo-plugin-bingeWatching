@@ -111,9 +111,7 @@ watch(
 const isFormValid = computed(() => {
   if (!formState.value.spec.vod_name?.trim()) return false;
   if (!formState.value.spec.vod_pic?.trim()) return false;
-  if (!formState.value.spec.seen?.trim()) return false;
-  return formState.value.spec.updateCycle?.trim();
-  
+  return true;
 });
 
 const handleSaveMovie = async () => {
@@ -127,19 +125,17 @@ const handleSaveMovie = async () => {
         Toast.error("影视图片不能为空");
         return;
       }
-      if (!formState.value.spec.seen?.trim()) {
-        Toast.error("已看集数不能为空");
-        return;
-      }
-      if (!formState.value.spec.updateCycle?.trim()) {
-        Toast.error("更新周期不能为空");
-        return;
-      }
       Toast.error("请检查表单填写是否正确");
       return;
     }
 
     saving.value = true;
+    
+    // 检查已看集数是否变更
+    if (props.movie && formState.value.spec.seen !== props.movie.spec.seen) {
+      formState.value.spec.newSeen = "0";
+    }
+
     if (isUpdateMode.value) {
       await handsomeMovieApi.updateHandsomeMovie(
         formState.value.metadata.name,
@@ -250,16 +246,12 @@ const handleSaveMovie = async () => {
             type="text"
             name="seen"
             label="已看集数"
-            validation="required"
-            :validation-messages="validationMessages"
           ></FormKit>
           <FormKit
             v-model="formState.spec.updateCycle"
             type="text"
             name="updateCycle"
             label="更新周期/周"
-            validation="required"
-            :validation-messages="validationMessages"
           ></FormKit>
           <FormKit
             :options="movieStatus"

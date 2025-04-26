@@ -19,10 +19,13 @@ import {formatDatetime} from "@/utils/date";
 import {useRouteQuery} from "@vueuse/router";
 import MovieEditingModal from "../components/MovieEditingModal.vue";
 import MovieSyncModal from "../components/MovieSyncModal.vue";
+import MovieQuotesModal from "../components/MovieQuotesModal.vue";
 import {handsomeMovieApi} from "@/api";
 import type {HandsomeMovie} from "@/api/generated";
 import IconParkMovie from '~icons/icon-park-outline/movie';
 import IconParkEdit from '~icons/icon-park-outline/edit';
+import IconParkMessage from '~icons/icon-park-outline/message';
+import IconParkHelp from '~icons/icon-park-outline/help';
 
 defineOptions({
   name: "MovieView",
@@ -47,6 +50,7 @@ const searchText = ref("");
 const total = ref(0);
 const editingModal = ref(false);
 const syncModal = ref(false);
+const quotesModal = ref(false);
 
 watch(
   () => [selectedSort.value, selectedType.value, keyword.value],
@@ -165,6 +169,16 @@ const onSyncModalClose = async () => {
   refetch();
 };
 
+const handleOpenQuotesModal = (movie: HandsomeMovie) => {
+  selectedMovie.value = movie;
+  quotesModal.value = true;
+};
+
+const onQuotesModalClose = async () => {
+  selectedMovie.value = undefined;
+  refetch();
+};
+
 onMounted(() => {
   // No need to fetch movie status as it's no longer fetched
 });
@@ -179,6 +193,11 @@ onMounted(() => {
   <MovieSyncModal
     v-model:visible="syncModal"
     @close="onSyncModalClose"
+  />
+  <MovieQuotesModal
+    v-model:visible="quotesModal"
+    :movie="selectedMovie"
+    @close="onQuotesModalClose"
   />
 
   <VPageHeader title="影视管理">
@@ -340,6 +359,15 @@ onMounted(() => {
                   <div class="w-max flex items-center">已看集数</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
+                  <div class="w-max flex items-center gap-1">
+                    更新集数
+                    <IconParkHelp
+                      v-tooltip="'基于更新周期自动计算影视已更新但未看的集数,当你手动更新集数时,会自动清零'"
+                      class="h-4 w-4 text-gray-400 cursor-help"
+                    />
+                  </div>
+                </th>
+                <th scope="col" class="px-4 py-3">
                   <div class="w-max flex items-center">更新周期</div>
                 </th>
                 <th scope="col" class="px-4 py-3">
@@ -392,6 +420,9 @@ onMounted(() => {
                   {{ movie.spec.seen }}
                 </td>
                 <td class="px-4 py-4 table-td">
+                  {{ movie.spec.newSeen || '-' }}
+                </td>
+                <td class="px-4 py-4 table-td">
                   {{ movie.spec.updateCycle }}
                 </td>
                 <td class="px-4 py-4 table-td">
@@ -399,6 +430,13 @@ onMounted(() => {
                 </td>
                 <td class="px-4 py-4 table-td" v-permission="['plugin:bingewatching:manage']">
                   <div class="flex items-center justify-end">
+                    <button
+                      class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+                      @click="handleOpenQuotesModal(movie)"
+                      v-tooltip="'经典台词'"
+                    >
+                      <IconParkMessage class="h-4 w-4" />
+                    </button>
                     <button
                       class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
                       @click="handleEditMovie(movie)"
