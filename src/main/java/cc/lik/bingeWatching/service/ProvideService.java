@@ -11,6 +11,5 @@ import run.halo.app.extension.ListResult;
 public interface ProvideService {
     Mono<JsonNode> getProvideMovieList(String vod_name);
     Mono<ListResult<HandsomeMovie>> listMovie(MovieQuery query);
-    Flux<HandsomeMovie> listAll();
     Mono<Void> insertMovie(List<HandsomeMovie> movies);
 }

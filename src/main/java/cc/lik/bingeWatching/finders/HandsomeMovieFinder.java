@@ -12,6 +12,7 @@ public interface HandsomeMovieFinder {
     Mono<ListResult<HandsomeMovieVo>> list(Integer page, Integer size);
 
     Mono<HandsomeMovieVo> getByName(String movieName);
+    Flux<HandsomeMovieVo> getByMetadataName(String MetadataName);
 
     Mono<ListResult<HandsomeMovieVo>> listByName(Integer page, Integer size,String movieName);
 }

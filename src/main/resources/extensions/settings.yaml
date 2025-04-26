@@ -52,6 +52,8 @@ spec:
         - $formkit: select
           if: $get(enablePicDump).value == true
           name: fileGroup
+          key: fileGroup
+          id: fileGroup
           label: 附件存储策略
           searchable: true
           help: "用于指定图片转存上传的默认附件存储策略"
@@ -67,6 +69,8 @@ spec:
         - $formkit: select
           if: $get(enablePicDump).value == true
           name: filePolicy
+          key: filePolicy
+          id: filePolicy
           label: 附件存储组
           searchable: true
           help: "用于指定图片转存上传的默认附件存储分组"

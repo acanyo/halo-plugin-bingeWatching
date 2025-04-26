@@ -53,6 +53,14 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
         return client.fetch(HandsomeMovie.class, vod_name)
             .map(HandsomeMovieVo::from);
     }
+    @Override
+    public Flux<HandsomeMovieVo> getByMetadataName(String metadataName) {
+        var listOptions = new ListOptions();
+        var query = equal("metadata.name", metadataName);
+        listOptions.setFieldSelector(FieldSelector.of(query));
+        return client.listAll(HandsomeMovie.class, listOptions, defaultSort())
+            .flatMap(this::getHandsomeMovieVo);
+    }
 
     @Override
     public Mono<ListResult<HandsomeMovieVo>> listByName(Integer page, Integer size,String name) {
@@ -90,7 +98,7 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
     }
 
     static Sort defaultSort() {
-        return Sort.by("spec.createTime").descending();
+        return Sort.by("metadata.creationTimestamp").descending();
     }
 
     private Mono<HandsomeMovieVo> getHandsomeMovieVo(@Nonnull HandsomeMovie movie) {

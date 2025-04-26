@@ -131,15 +131,6 @@ public class ProvideServiceImpl implements ProvideService {
     }
 
     @Override
-    public Flux<HandsomeMovie> listAll() {
-        var listOptions = new ListOptions();
-        var query = all();
-        listOptions.setFieldSelector(FieldSelector.of(query));
-        return client.listAll(HandsomeMovie.class, listOptions, defaultSort())
-            .flatMap(Mono::just);
-    }
-
-    @Override
     public Mono<Void> insertMovie(List<HandsomeMovie> movies) {
         if (movies == null || movies.isEmpty()) {
             return Mono.empty();

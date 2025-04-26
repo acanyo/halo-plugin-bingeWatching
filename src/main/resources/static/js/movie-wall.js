@@ -1,5 +1,14 @@
-$(document).ready(function() {
-    initMovieWall();
+// 原生JS实现点击跳转
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.likcc-movie-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+            const name = this.dataset.name;
+            if (name) {
+                window.location.href = '/movies/' + name;
+            }
+        });
+    });
 });
 
 function initMovieWall() {
@@ -23,8 +32,8 @@ function createMovieCard(movie) {
     const statusClass = getStatusClass(movie.spec.status);
     const statusText = getStatusText(movie.spec.status);
     
-    return $(`
-        <div class="likcc-movie-card">
+    const $card = $(`
+        <div class="likcc-movie-card" data-name="${movie.metadata.name}">
             <img class="likcc-movie-poster" src="${movie.spec.vod_pic}" alt="${movie.spec.vod_name}">
             <div class="likcc-movie-info">
                 <div class="likcc-movie-title">${movie.spec.vod_name}</div>
@@ -37,6 +46,8 @@ function createMovieCard(movie) {
             </div>
         </div>
     `);
+
+    return $card;
 }
 
 function getStatusClass(status) {
