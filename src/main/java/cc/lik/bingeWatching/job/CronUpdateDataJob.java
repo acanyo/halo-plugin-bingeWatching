@@ -26,7 +26,7 @@ public class CronUpdateDataJob {
     public void update() {
         int currentDayOfWeek = LocalDateTime.now().getDayOfWeek().getValue();
         log.info("当前是周{}", currentDayOfWeek);
-
+        
         client.list(HandsomeMovie.class, movie -> {
             String status = movie.getSpec().getStatus();
             String updateCycle = movie.getSpec().getUpdateCycle();
@@ -38,15 +38,21 @@ public class CronUpdateDataJob {
                     .anyMatch(day -> day.equals(String.valueOf(currentDayOfWeek)));
         }, null)
         .flatMap(movie -> {
-            // 更新集数+1
-            movie.getSpec().setSeen(movie.getSpec().getSeen() + 1);
-            return client.update(movie);
+            try {
+                String currentSeen = movie.getSpec().getSeen();
+                int seen = Integer.parseInt(currentSeen);
+                movie.getSpec().setSeen(String.valueOf(seen + 1));
+                return client.update(movie);
+            } catch (NumberFormatException e) {
+                log.error("更新电影集数失败，当前集数格式错误: {}", movie.getSpec().getSeen(), e);
+                return Mono.empty();
+            }
         })
         .timeout(Duration.ofSeconds(30))
         .onErrorResume(e -> {
             log.error("更新电影集数失败", e);
             return Mono.empty();
         })
-        .blockLast();
+        .subscribe();
     }
 }

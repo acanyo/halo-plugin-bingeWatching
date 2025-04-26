@@ -8,6 +8,7 @@ import static org.springdoc.core.fn.builders.schema.Builder.schemaBuilder;
 
 import cc.lik.bingeWatching.MovieQuery;
 import cc.lik.bingeWatching.entity.HandsomeMovie;
+import cc.lik.bingeWatching.job.CronUpdateDataJob;
 import cc.lik.bingeWatching.service.FileAttachmentService;
 import cc.lik.bingeWatching.service.ProvideService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -36,6 +37,7 @@ public class MovieEndpoint implements CustomEndpoint {
     private final ProvideService provideSvc;
     private final FileAttachmentService fileAttachmentService;
     private final ObjectMapper objectMapper;
+    private final CronUpdateDataJob cronUpdateDataJob;
     
     @Override
     public RouterFunction<ServerResponse> endpoint() {
@@ -115,6 +117,14 @@ public class MovieEndpoint implements CustomEndpoint {
                         .implementation(Attachment.class)
                 )
             )
+            .POST("movies/sync", this::syncMovies, builder -> builder.operationId("Sync movies")
+                .tag(tag)
+                .description("手动同步电影集数")
+                .response(
+                    responseBuilder()
+                        .implementation(Void.class)
+                )
+            )
             .build();
     }
 
@@ -160,6 +170,14 @@ public class MovieEndpoint implements CustomEndpoint {
             .doOnError(error -> log.error("批量插入影视记录失败", error))
             .onErrorResume(error -> ServerResponse.badRequest()
                 .bodyValue("批量插入影视记录失败: " + error.getMessage()));
+    }
+
+    Mono<ServerResponse> syncMovies(ServerRequest request) {
+        return Mono.fromRunnable(cronUpdateDataJob::update)
+            .then(ServerResponse.ok().build())
+            .doOnError(error -> log.error("手动同步电影集数失败", error))
+            .onErrorResume(error -> ServerResponse.badRequest()
+                .bodyValue("手动同步电影集数失败: " + error.getMessage()));
     }
 
     @Override
