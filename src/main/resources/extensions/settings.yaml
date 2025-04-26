@@ -96,3 +96,14 @@ spec:
           name: proxyHost
           value: ""
           help: "搭建教程：https://docs.lik.cc/"
+        - $formkit: radio
+          label: 启用定时更新影视集数
+          name: cronUpdate
+          id: cronUpdate
+          value: true
+          help: 根据你填入已看集数和更新周期到点给你更新新的集数防止忘记看到多少 每日凌晨更新 一般动漫都是10点左右更新
+          options:
+            - value: true
+              label: 开启
+            - value: false
+              label: 关闭

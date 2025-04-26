@@ -16,5 +16,6 @@ public interface SettingConfigGetter {
         private String filePolicy;
         private Boolean isProxy;
         private String proxyHost;
+        private Boolean cronUpdate;
     }
 }

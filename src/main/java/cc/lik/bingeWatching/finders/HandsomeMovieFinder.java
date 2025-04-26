@@ -11,7 +11,7 @@ public interface HandsomeMovieFinder {
 
     Mono<ListResult<HandsomeMovieVo>> list(Integer page, Integer size);
 
-    Mono<HandsomeMovieVo> getByName(String footprintName);
+    Mono<HandsomeMovieVo> getByName(String movieName);
 
-    Mono<ListResult<HandsomeMovieVo>> listByName(Integer page, Integer size,String footprintName);
+    Mono<ListResult<HandsomeMovieVo>> listByName(Integer page, Integer size,String movieName);
 }
