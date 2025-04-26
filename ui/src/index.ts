@@ -12,11 +12,11 @@ export default definePlugin({
         path: "/bingeWatching",
         name: "BingeWatchingRoot",
         meta: {
-          title: "追剧管理",
+          title: "海报墙管理",
           searchable: true,
           permissions: ["plugin:bingewatching:view"],
           menu: {
-            name: "追剧管理",
+            name: "海报墙管理",
             group: "content",
             icon: markRaw(MovieIcon),
             priority: 20,
@@ -28,7 +28,7 @@ export default definePlugin({
             name: "BingeWatching",
             component: BingeWatchingView,
             meta: {
-              title: "追剧管理",
+              title: "海报墙管理",
               searchable: true,
               permissions: ["plugin:bingewatching:view"],
             },

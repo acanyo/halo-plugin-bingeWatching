@@ -94,7 +94,7 @@ const {
       return data.items;
     } catch (error) {
       console.error("Failed to fetch Movies:", error);
-      Toast.error("获取追剧信息列表失败");
+      Toast.error("获取海报墙信息列表失败");
       return [];
     }
   },

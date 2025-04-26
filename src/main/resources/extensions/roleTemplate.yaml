@@ -7,8 +7,8 @@ metadata:
   annotations:
     rbac.authorization.halo.run/dependencies: |
       [ "role-template-view-bingewatching" ]
-    rbac.authorization.halo.run/module: "追剧"
-    rbac.authorization.halo.run/display-name: "追剧管理"
+    rbac.authorization.halo.run/module: "海报墙"
+    rbac.authorization.halo.run/display-name: "海报墙管理"
     rbac.authorization.halo.run/ui-permissions: |
       ["plugin:bingewatching:manage"]
 rules:
@@ -25,8 +25,8 @@ metadata:
   labels:
     halo.run/role-template: "true"
   annotations:
-    rbac.authorization.halo.run/module: "追剧"
-    rbac.authorization.halo.run/display-name: "追剧查看"
+    rbac.authorization.halo.run/module: "海报墙"
+    rbac.authorization.halo.run/display-name: "海报墙查看"
     rbac.authorization.halo.run/ui-permissions: |
       ["plugin:bingewatching:view"]
 rules:

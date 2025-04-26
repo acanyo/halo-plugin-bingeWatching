@@ -11,14 +11,14 @@ spec:
   author:
     name: Handsome
     website: https://www.lik.cc
-  logo: logo.svg
+  logo: logo.png
   homepage: https://github.com/acanyo/plugin-timeline#readme
   repo: https://github.com/acanyo/plugin-timeline
   issues: https://github.com/acanyo/plugin-timeline/issues
   settingName: plugin-bingeWatching-settings
   configMapName: plugin-bingeWatching-configmap
-  displayName: "追剧日常"
-  description: "提供一个追剧功能"
+  displayName: "海报墙"
+  description: "提供一个海报墙功能"
   license:
     - name: "GPL-3.0"
       url: "https://github.com/acanyo/plugin-timeline/blob/main/LICENSE"

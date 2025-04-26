@@ -19,7 +19,7 @@ spec:
               align-items: "center"
           children:
             - $el: span
-              children: "查看 追剧 帮助文档"
+              children: "查看 海报墙 帮助文档"
             - $el: img
               attrs:
                 src: "/plugins/timeline/assets/static/img/link.svg"
@@ -40,7 +40,7 @@ spec:
           label: 网站标题
           name: title
           validation: required
-          value: '追剧日常'
+          value: "海报墙"
           help: "这里是你的网址标题"
         - $formkit: checkbox
           label: 开启图片转存
