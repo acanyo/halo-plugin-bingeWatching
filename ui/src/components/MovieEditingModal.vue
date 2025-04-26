@@ -54,9 +54,8 @@ const formState = ref<HandsomeMovie>(cloneDeep(initialFormState));
 const saving = ref<boolean>(false);
 const formVisible = ref(false);
 const movieStatus = ref<StatusOption[]>([
-  { label: '已看', value: '已看' },
-  { label: '再看', value: '再看' },
-  { label: '想看', value: '想看' },
+  { label: '观看中', value: '观看中' },
+  { label: '完结', value: '完结' },
   { label: '弃坑', value: '弃坑' }
 ]);
 
@@ -113,8 +112,8 @@ const isFormValid = computed(() => {
   if (!formState.value.spec.vod_name?.trim()) return false;
   if (!formState.value.spec.vod_pic?.trim()) return false;
   if (!formState.value.spec.seen?.trim()) return false;
-  if (!formState.value.spec.updateCycle?.trim()) return false;
-  return true;
+  return formState.value.spec.updateCycle?.trim();
+  
 });
 
 const handleSaveMovie = async () => {

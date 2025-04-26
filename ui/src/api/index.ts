@@ -116,6 +116,13 @@ export class HandsomeMovieApi {
       return [];
     }
   }
+
+  insertMovie(movies: HandsomeMovie[]): Promise<void> {
+    return this.axios.post(
+      `/apis/api.bingewatching.lik.cc/v1alpha1/movies/insert`,
+      movies
+    );
+  }
 }
 
 // 创建实例并导出

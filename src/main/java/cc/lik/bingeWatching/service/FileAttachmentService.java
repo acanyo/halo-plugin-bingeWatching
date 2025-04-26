@@ -1,13 +1,15 @@
 package cc.lik.bingeWatching.service;
 
 import reactor.core.publisher.Mono;
-import run.halo.app.core.extension.attachment.Attachment;
 
+/**
+ * 文件附件服务
+ */
 public interface FileAttachmentService {
     /**
-     * 转存附件
-     * @param picUrl 图片url
+     * 更新文件并返回新的URL
+     * @param picUrl 原始图片URL
      * @return 处理后的图片URL
      */
-    Mono<Attachment> updateFile(String picUrl);
+    Mono<String> updateFile(String picUrl);
 }

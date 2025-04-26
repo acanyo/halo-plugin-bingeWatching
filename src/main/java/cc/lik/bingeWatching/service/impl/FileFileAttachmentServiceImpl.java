@@ -2,6 +2,8 @@ package cc.lik.bingeWatching.service.impl;
 
 import cc.lik.bingeWatching.service.FileAttachmentService;
 import cc.lik.bingeWatching.service.SettingConfigGetter;
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -14,35 +16,29 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
-import run.halo.app.core.extension.attachment.Attachment;
 import run.halo.app.core.extension.service.AttachmentService;
-
-import java.net.URI;
-import java.time.Duration;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileFileAttachmentServiceImpl implements FileAttachmentService {
     private final SettingConfigGetter settingConfigGetter;
-    private final WebClient.Builder webClientBuilder;
     private final AttachmentService attachmentSvc;
     private final DataBufferFactory dataBufferFactory = DefaultDataBufferFactory.sharedInstance;
 
     @Override
-    public Mono<Attachment> updateFile(String picUrl) {
+    public Mono<String> updateFile(String picUrl) {
         return settingConfigGetter.getBasicConfig()
             .switchIfEmpty(Mono.error(new RuntimeException("无法获取基本配置")))
             .flatMap(config -> {
                 // 检查是否需要转存
                 if (!Boolean.TRUE.equals(config.getEnablePicDump())) {
                     log.info("图片转存功能未启用");
-                    return Mono.empty();
+                    return Mono.just(picUrl);
                 }
                 if (!isImageUrl(picUrl)) {
                     log.info("不是有效的图片URL: {}", picUrl);
-                    return Mono.empty();
+                    return Mono.just(picUrl);
                 }
                 HttpClient httpClient = HttpClient.create()
                     .responseTimeout(Duration.ofSeconds(30))
@@ -70,6 +66,13 @@ public class FileFileAttachmentServiceImpl implements FileAttachmentService {
                             dataBufferFlux,
                             mediaTypeRef.get()
                         );
+                    })
+                    .map(attachment -> 
+                        attachment.getMetadata().getAnnotations().get("storage.halo.run/uri")
+                    )
+                    .onErrorResume(e -> {
+                        log.error("图片处理失败，使用原始URL: {}, 错误: {}", picUrl, e.getMessage());
+                        return Mono.just(picUrl);
                     });
             });
     }
@@ -118,16 +121,6 @@ public class FileFileAttachmentServiceImpl implements FileAttachmentService {
                lowerUrl.endsWith(".png") ||
                lowerUrl.endsWith(".gif") ||
                lowerUrl.endsWith(".webp");
-    }
-
-    /**
-     * 检查是否是 WebP 格式
-     */
-    private boolean isWebPFormat(String url) {
-        if (url == null || url.isEmpty()) {
-            return false;
-        }
-        return url.toLowerCase().endsWith(".webp");
     }
 
     /**

@@ -4,6 +4,7 @@ import static run.halo.app.extension.index.query.QueryFactory.all;
 
 import cc.lik.bingeWatching.MovieQuery;
 import cc.lik.bingeWatching.entity.HandsomeMovie;
+import cc.lik.bingeWatching.service.FileAttachmentService;
 import cc.lik.bingeWatching.service.ProvideService;
 import cc.lik.bingeWatching.service.SettingConfigGetter;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,6 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import run.halo.app.extension.ListOptions;
 import run.halo.app.extension.ListResult;
+import run.halo.app.extension.Metadata;
 import run.halo.app.extension.PageRequestImpl;
 import run.halo.app.extension.ReactiveExtensionClient;
 import run.halo.app.extension.router.selector.FieldSelector;
@@ -36,6 +38,7 @@ public class ProvideServiceImpl implements ProvideService {
     private final WebClient.Builder webClientBuilder;
     private final ObjectMapper objectMapper;
     private final SettingConfigGetter settingConfigGetter;
+    private final FileAttachmentService fileAttachmentSvc;
     private static final List<String> REQUIRED_FIELDS = List.of(
         "vod_name", "vod_en", "vod_pic", "vod_actor", "vod_lang", "vod_year", "vod_score", "vod_content", "type_name"
     );
@@ -90,7 +93,7 @@ public class ProvideServiceImpl implements ProvideService {
                             ObjectNode successResponse = objectMapper.createObjectNode();
                             successResponse.put("error", false);
                             successResponse.put("message", "请求成功");
-                            successResponse.put("total", filteredList.size()); 
+                            successResponse.put("total", filteredList.size());
                             successResponse.set("data", filteredList);
                             return Mono.just((JsonNode) successResponse);
                         } catch (Exception e) {
@@ -134,6 +137,35 @@ public class ProvideServiceImpl implements ProvideService {
         listOptions.setFieldSelector(FieldSelector.of(query));
         return client.listAll(HandsomeMovie.class, listOptions, defaultSort())
             .flatMap(Mono::just);
+    }
+
+    @Override
+    public Mono<Void> insertMovie(List<HandsomeMovie> movies) {
+        if (movies == null || movies.isEmpty()) {
+            return Mono.empty();
+        }
+
+        return Flux.fromIterable(movies)
+            .flatMap(movie -> {
+                if (movie.getSpec() == null) {
+                    return Mono.empty();
+                }
+
+                movie.setMetadata(new Metadata());
+                movie.getMetadata().setGenerateName("handsome-movie-");
+
+                // 处理图片
+                return fileAttachmentSvc.updateFile(movie.getSpec().getVod_pic())
+                    .flatMap(imageUri -> {
+                        movie.getSpec().setVod_pic(imageUri);
+                        return client.create(movie);
+                    })
+                    .onErrorResume(e -> {
+                        log.error("Failed to process image for movie: {}", movie.getSpec().getVod_name());
+                        return client.create(movie);
+                    });
+            })
+            .then();
     }
     static Sort defaultSort() {
         return Sort.by("metadata.creationTimestamp").descending();

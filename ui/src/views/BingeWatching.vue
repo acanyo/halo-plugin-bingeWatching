@@ -14,7 +14,7 @@ import {
   VSpace
 } from "@halo-dev/components";
 import {useQuery} from "@tanstack/vue-query";
-import {computed, ref, watch, onMounted} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {formatDatetime} from "@/utils/date";
 import {useRouteQuery} from "@vueuse/router";
 import MovieEditingModal from "../components/MovieEditingModal.vue";
@@ -35,9 +35,8 @@ const selectedSort = useRouteQuery<string | undefined>("sort");
 const selectedType = useRouteQuery<string | undefined>("status");
 const movieStatus = ref<{ label: string; value: string | undefined; }[]>([
   { label: '全部', value: undefined },
-  { label: '已看', value: '已看' },
-  { label: '在看', value: '在看' },
-  { label: '想看', value: '想看' },
+  { label: '观看中', value: '观看中' },
+  { label: '完结', value: '完结' },
   { label: '弃坑', value: '弃坑' }
 ]);
 
@@ -79,11 +78,6 @@ const {
           selectedType.value ? `&type=${selectedType.value}` : ""
         }${keyword.value ? `&keyword=${encodeURIComponent(keyword.value)}` : ""}`
       );
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
       const data: { items: HandsomeMovie[]; total: number } = await response.json();
       data.items = data.items.map(item => ({
         ...item,
