@@ -12,7 +12,6 @@ public interface SettingConfigGetter {
         public static final String GROUP = "basic";
         private String title;
         private Boolean enablePicDump;
-        private Boolean enablePicWebp;
         private String fileGroup;
         private String filePolicy;
         private Boolean isProxy;

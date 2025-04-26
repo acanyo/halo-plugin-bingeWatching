@@ -2,11 +2,13 @@ package cc.lik.bingeWatching.endpoint;
 
 import static org.springdoc.core.fn.builders.apiresponse.Builder.responseBuilder;
 import static org.springdoc.core.fn.builders.parameter.Builder.parameterBuilder;
+
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 
 import cc.lik.bingeWatching.MovieQuery;
 import cc.lik.bingeWatching.entity.HandsomeMovie;
 import cc.lik.bingeWatching.service.ProvideService;
+import cc.lik.bingeWatching.service.FileAttachmentService;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +21,15 @@ import reactor.core.publisher.Mono;
 import run.halo.app.core.extension.endpoint.CustomEndpoint;
 import run.halo.app.extension.GroupVersion;
 import run.halo.app.extension.ListResult;
+import run.halo.app.core.extension.attachment.Attachment;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class MovieEndpoint implements CustomEndpoint {
     private final ProvideService provideSvc;
+    private final FileAttachmentService fileAttachmentService;
+    
     @Override
     public RouterFunction<ServerResponse> endpoint() {
         final var tag = "api.bingewatching.lik.cc/v1alpha1/bingewatching";
@@ -57,6 +62,23 @@ public class MovieEndpoint implements CustomEndpoint {
                         );
                 }
             )
+            .POST("movies/attachment", this::updateFile, builder -> {
+                    builder.operationId("Update attachment")
+                        .tag(tag)
+                        .description("转存附件")
+                        .parameter(
+                            parameterBuilder()
+                                .in(ParameterIn.QUERY)
+                                .name("picUrl")
+                                .description("图片URL")
+                                .required(true)
+                        )
+                        .response(
+                            responseBuilder()
+                                .implementation(Attachment.class)
+                        );
+                }
+            )
             .build();
     }
 
@@ -74,6 +96,18 @@ public class MovieEndpoint implements CustomEndpoint {
             })
             .doOnError(error -> log.error("handsome-halo-plugin-bingeWatching: 获取电影失败, 电影名称: {}", name, error))
             .onErrorResume(error -> ServerResponse.badRequest().bodyValue("获取电影失败: " + error.getMessage()));
+    }
+
+    Mono<ServerResponse> updateFile(ServerRequest serverRequest) {
+        String picUrl = serverRequest.queryParam("picUrl").orElse("");
+        if (picUrl.isEmpty()) {
+            return ServerResponse.badRequest().bodyValue("图片URL不能为空");
+        }
+        
+        return fileAttachmentService.updateFile(picUrl)
+            .flatMap(attachment -> ServerResponse.ok().bodyValue(attachment))
+            .doOnError(error -> log.error("handsome-halo-plugin-bingeWatching: 转存附件失败", error))
+            .onErrorResume(error -> ServerResponse.badRequest().bodyValue("转存附件失败: " + error.getMessage()));
     }
 
     @Override

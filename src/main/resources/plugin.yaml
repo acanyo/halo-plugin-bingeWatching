@@ -17,8 +17,8 @@ spec:
   issues: https://github.com/acanyo/plugin-timeline/issues
   settingName: plugin-bingeWatching-settings
   configMapName: plugin-bingeWatching-configmap
-  displayName: "时间轴"
-  description: "提供一个时间轴功能"
+  displayName: "追剧日常"
+  description: "提供一个追剧功能"
   license:
     - name: "GPL-3.0"
       url: "https://github.com/acanyo/plugin-timeline/blob/main/LICENSE"

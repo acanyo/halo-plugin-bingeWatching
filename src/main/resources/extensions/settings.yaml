@@ -4,7 +4,7 @@ metadata:
   name: plugin-bingeWatching-settings
 spec:
   forms:
-    - group: base
+    - group: basic
       label: 基本设置
       formSchema:
         - $el: a
@@ -49,13 +49,6 @@ spec:
           key: enablePicDump
           value: true
           help: "为了防止源站图片失效最好将图片保存至Halo附件库"
-        - $formkit: checkbox
-          if: $get(enablePicDump).value == true
-          label: 图片转存webp
-          name: enablePicWebp
-          id: enablePicWebp
-          key: enablePicWebp
-          value: true
         - $formkit: select
           if: $get(enablePicDump).value == true
           name: fileGroup
