@@ -36,44 +36,6 @@ spec:
             height: "120px"
             style:
               margin-left: "80px"
-        - $formkit: text
-          label: 网站标题
-          name: title
-          id: title
-          key: title
-          validation: required
-          value: "海报墙"
-          help: "这里是你的网址标题"
-        - $formkit: attachment
-          label: 导航Logo
-          name: navLogo
-          id: navLogo
-          key: navLogo
-          value: "https://www.lik.cc/upload/logo.png"
-          help: "网站顶部logo"
-        - $formkit: checkbox
-          label: 开启顶部栏
-          name: enableNavigationBar
-          id: enableNavigationBar
-          key: enableNavigationBar
-          value: true
-          help: "为你的海报墙开启一个顶部栏"
-        - $formkit: text
-          label: 一级描述
-          name: description
-          key: description
-          id: description
-          validation: required
-          value: "发现你的下一个心动剧集"
-          help: "海报墙介绍"
-        - $formkit: text
-          label: 二级描述
-          name: erDescription
-          key: erDescription
-          id: erDescription
-          validation: required
-          value: "热门推荐、最新上线、经典回顾，尽在海报墙"
-          help: "海报墙二级介绍"
         - $formkit: checkbox
           label: 开启图片转存
           name: enablePicDump
@@ -143,3 +105,66 @@ spec:
               label: 开启
             - value: false
               label: 关闭
+    - group: style
+      label: 样式设置
+      formSchema:
+        - $formkit: text
+          label: 网站标题
+          name: title
+          id: title
+          key: title
+          validation: required
+          value: "海报墙"
+          help: "这里是你的网址标题"
+        - $formkit: color
+          label: 主题色
+          name: themeColor
+          id: themeColor
+          key: themeColor
+          value: "#6366f1"
+          help: "设置海报墙的主题色调"
+        - $formkit: color
+          label: 标题文字颜色
+          name: titleColor
+          id: titleColor
+          key: titleColor
+          value: "#ffffff"
+          help: "设置标题文字的颜色"
+        - $formkit: color
+          label: 描述文字颜色
+          name: descriptionColor
+          id: descriptionColor
+          key: descriptionColor
+          value: "#b0b3bb"
+          help: "设置描述文字的颜色"
+        - $formkit: attachment
+          label: 导航Logo
+          name: navLogo
+          id: navLogo
+          key: navLogo
+          value: "https://www.lik.cc/upload/logo.png"
+          help: "网站顶部logo"
+        - $formkit: checkbox
+          label: 开启顶部栏
+          name: enableNavigationBar
+          id: enableNavigationBar
+          key: enableNavigationBar
+          value: true
+          help: "为你的海报墙开启一个顶部栏"
+        - $formkit: text
+          label: 一级描述
+          name: description
+          key: description
+          id: description
+          validation: required
+          value: "发现你的下一个心动剧集"
+          help: "海报墙介绍"
+        - $formkit: text
+          if: "$get(enableNavigationBar).value === false"
+          label: 二级描述
+          name: erDescription
+          key: erDescription
+          id: erDescription
+          validation: required
+          value: "热门推荐、最新上线、经典回顾，尽在海报墙"
+          help: "海报墙二级介绍"

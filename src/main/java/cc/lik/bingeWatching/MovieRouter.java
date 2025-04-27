@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -31,62 +32,51 @@ public class MovieRouter {
 
     @Bean
     RouterFunction<ServerResponse> movieRouterFunction() {
-        return route(GET("/movies"), this::renderMoviePage)
+        return route(GET("/movies"), this::renderMovieWallPage)
             .andRoute(GET("/movies/{name}"), this::renderMovieDetailPage);
     }
 
-    private Mono<ServerResponse> renderMoviePage(ServerRequest request) {
-        String keyword = request.queryParam("keyword").orElse(null);
-        int page = Integer.parseInt(request.queryParam("page").orElse("1"));
-        int size = Integer.parseInt(request.queryParam("size").orElse(String.valueOf(DEFAULT_PAGE_SIZE)));
-        
-        return settingConfigGetter.getBasicConfig().flatMap(config ->
-            templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "movie-wall")
-                .flatMap(templateName -> {
-                    Mono<run.halo.app.extension.ListResult<HandsomeMovieVo>> moviesMono = 
-                        (keyword != null && !keyword.isBlank())
-                            ? movieFinder.listFuzzySearchByName(page, size, keyword)
-                            : movieFinder.list(page, size);
-                    
-                    return moviesMono.flatMap(listResult -> {
-                        Map<String, Object> model = new HashMap<>();
-                        model.put("title", config.getTitle());
-                        model.put("description", config.getDescription());
-                        model.put("erDescription", config.getErDescription());
-                        model.put("enableNavigationBar", config.getEnableNavigationBar());
-                        model.put("navLogo", config.getNavLogo());
-                        model.put("movies", listResult.getItems());
-                        model.put("currentPage", listResult.getPage());
-                        model.put("totalPages", (int) Math.ceil((double) listResult.getTotal() / size));
-                        model.put("totalCount", listResult.getTotal());
-                        
-                        return ServerResponse.ok().render(templateName, model);
-                    });
-                })
-        );
+    private Mono<ServerResponse> renderMovieWallPage(ServerRequest request) {
+        return this.settingConfigGetter.getStyleConfig()
+            .flatMap(styleConfig -> {
+                Map<String, Object> model = new HashMap<>();
+                model.put("styleConfig", styleConfig);
+                
+                String keyword = request.queryParam("keyword").orElse(null);
+                int page = request.queryParam("page").map(Integer::parseInt).orElse(1);
+                int size = 12;
+                
+                Mono<run.halo.app.extension.ListResult<HandsomeMovieVo>> moviesMono = 
+                    (keyword != null && !keyword.isBlank())
+                        ? movieFinder.listFuzzySearchByName(page, size, keyword)
+                        : movieFinder.list(page, size);
+                
+                return moviesMono.flatMap(listResult -> {
+                    model.put("movies", listResult.getItems());
+                    model.put("currentPage", page);
+                    model.put("totalPages", (int) Math.ceil((double) listResult.getTotal() / size));
+                    return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "movie-wall")
+                        .flatMap(templateName -> ServerResponse.ok()
+                            .render(templateName, model));
+                });
+            });
     }
 
     private Mono<ServerResponse> renderMovieDetailPage(ServerRequest request) {
         String name = request.pathVariable("name");
-        return movieFinder.getByMetadataName(name)
-            .next()
-            .flatMap(movie -> {
-                Map<String, Object> model = new HashMap<>();
-                model.put("movie", movie);
-                return getPosterWallTitle()
-                    .map(title -> title + "|" + movie.getSpec().getVod_name())
-                    .flatMap(formattedTitle -> {
-                        model.put("title", formattedTitle);
-                        return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "movie-detail")
-                            .flatMap(templateName -> ServerResponse.ok()
-                                .render(templateName, model));
-                    });
-            });
-    }
-
-    Mono<String> getPosterWallTitle() {
-        return this.settingConfigGetter.getBasicConfig()
-            .map(SettingConfigGetter.BasicConfig::getTitle)
-            .defaultIfEmpty("海报墙");
+        return Mono.zip(
+            movieFinder.getByMetadataName(name).next(),
+            this.settingConfigGetter.getStyleConfig()
+        ).flatMap(tuple -> {
+            HandsomeMovieVo movie = tuple.getT1();
+            SettingConfigGetter.StyleConfig styleConfig = tuple.getT2();
+            Map<String, Object> model = new HashMap<>();
+            model.put("movie", movie);
+            model.put("styleConfig", styleConfig);
+            model.put("title", styleConfig.getTitle() + "|" + movie.getSpec().getVod_name());
+            return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "movie-detail")
+                .flatMap(templateName -> ServerResponse.ok()
+                    .render(templateName, model));
+        });
     }
 } 

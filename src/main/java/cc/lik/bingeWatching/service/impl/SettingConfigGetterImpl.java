@@ -16,4 +16,10 @@ public class SettingConfigGetterImpl implements SettingConfigGetter {
         return settingFetcher.fetch(BasicConfig.GROUP, BasicConfig.class)
             .defaultIfEmpty(new SettingConfigGetter.BasicConfig());
     }
+
+    @Override
+    public Mono<StyleConfig> getStyleConfig() {
+        return settingFetcher.fetch(StyleConfig.GROUP, StyleConfig.class)
+            .defaultIfEmpty(new SettingConfigGetter.StyleConfig());
+    }
 }

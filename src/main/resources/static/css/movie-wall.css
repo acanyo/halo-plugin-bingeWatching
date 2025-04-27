@@ -4,6 +4,8 @@
     gap: 32px 24px;
     justify-items: center;
     padding: 32px 0;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .likcc-movie-card {
@@ -32,33 +34,31 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.likcc-movie-title {
-    position: absolute;
-    left: 0; right: 0; bottom: 0;
-    background: linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%);
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 12px 10px 8px 10px;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    z-index: 2;
+.likcc-movie-poster.loaded {
+    opacity: 1;
 }
 
 .likcc-movie-info {
-    width: 100%;
-    padding: 8px 6px 6px 6px;
-    background: #23262e;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    min-height: 70px;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%);
+    padding: 12px 10px 8px 10px;
+    color: #fff;
+}
+
+.likcc-movie-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .likcc-movie-meta {
@@ -68,21 +68,28 @@
     flex-wrap: wrap;
     gap: 6px 10px;
     align-items: center;
-    width: 100%;
 }
 
-.likcc-movie-score {
-    color: #ffd700;
-    font-weight: bold;
-    font-size: 0.95em;
+.likcc-movie-status {
+    font-size: 0.85em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 6px;
 }
 
-.likcc-movie-year {
-    color: #6ec6ff;
+.likcc-status-watching {
+    background-color: #4CAF50;
+    color: white;
 }
 
-.likcc-movie-type {
-    color: #a3e635;
+.likcc-status-finished {
+    background-color: #2196F3;
+    color: white;
+}
+
+.likcc-status-dropped {
+    background-color: #F44336;
+    color: white;
 }
 
 @media (max-width: 600px) {
@@ -90,10 +97,12 @@
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 16px 8px;
     }
+    
     .likcc-movie-card {
         width: 120px;
         height: 180px;
     }
+    
     .likcc-movie-title {
         font-size: 13px;
         padding: 8px 6px 6px 6px;
@@ -284,10 +293,9 @@ body#likcc-binge-body .likcc-search-card button:hover {
 
 /* 玻璃态效果 */
 .likcc-glass {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255,255,255,0.8);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
 /* 卡片样式 */
@@ -440,4 +448,161 @@ body#likcc-binge-body .likcc-search-card button:hover {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+/* 布局样式 */
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* 卡片基础样式 */
+.movie-card {
+    position: relative;
+    aspect-ratio: 2/3;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.movie-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.movie-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0));
+    padding: 1rem;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .movie-info {
+    transform: translateY(0);
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+}
+
+/* 加载状态 */
+.movie-card.loading::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite linear;
+}
+
+.movie-card.loading::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e0e0e0;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+}
+
+/* 动画效果 */
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+    .movie-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 页面头部样式 */
+.page-header {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+/* 搜索区域样式 */
+.search-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-input {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* 响应式布局 */
+@media (max-width: 600px) {
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 16px 8px;
+    }
+    
+    .movie-card {
+        width: 120px;
+        height: 180px;
+    }
+    
+    .movie-title {
+        font-size: 13px;
+    }
 } 

@@ -3,27 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title}">影视海报墙</title>
+    <title th:text="${styleConfig.title}">影视海报墙</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"/>
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
-<body id="likcc-binge-body" class="min-h-screen bg-gradient-to-b from-[#f7fafd] to-[#e0e7ef] flex flex-col">
+<body class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
     <!-- 顶部导航栏 -->
-    <div th:if="${enableNavigationBar}" class="w-full bg-white shadow-md">
+    <div th:if="${styleConfig.enableNavigationBar}" class="w-full bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_2ks3pjua.json" background="transparent" speed="1" style="width: 40px; height: 40px;" loop autoplay></lottie-player>
-                    <span class="ml-2 text-xl font-bold text-gray-900">[[${description}]]</span>
+                <div class="flex items-center space-x-3">
+                    <img th:if="${styleConfig.navLogo != null and styleConfig.navLogo != ''}" 
+                         th:src="${styleConfig.navLogo}" 
+                         class="h-8 w-auto" 
+                         alt="Logo" />
+                    <span class="text-xl font-bold text-gray-900" 
+                          th:text="${styleConfig.description}">影视海报墙</span>
                 </div>
                 <div class="flex items-center">
-                    <button onclick="openSearchModal()" class="flex items-center px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="11" cy="11" r="8"/>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                        </svg>
+                    <div class="relative">
+                        <input type="text" 
+                               id="nav-search-input"
+                               class="w-64 px-4 py-2 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                               placeholder="搜索影视..."
+                               th:value="${param.keyword}" />
+                        <button onclick="handleSearch(event)" 
+                                class="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner区域 -->
+    <div th:unless="${styleConfig.enableNavigationBar}" class="page-header text-white py-16 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <img th:if="${styleConfig.navLogo != null and styleConfig.navLogo != ''}" 
+                 th:src="${styleConfig.navLogo}" 
+                 class="h-20 mx-auto mb-6" 
+                 alt="Logo" />
+            <h1 class="text-4xl font-bold mb-4" 
+                th:text="${styleConfig.description}">影视海报墙</h1>
+            <p class="text-xl opacity-90 mb-8" 
+               th:text="${styleConfig.erDescription}">热门推荐，最新上线，经典回顾</p>
+            
+            <div class="search-container">
+                <div class="relative">
+                    <input type="text" 
+                           id="banner-search-input"
+                           class="w-full px-6 py-4 rounded-full search-input focus:outline-none focus:ring-2 focus:ring-white/50"
+                           placeholder="搜索你感兴趣的影视..."
+                           th:value="${param.keyword}" />
+                    <button onclick="handleSearch(event)" 
+                            class="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 rounded-full bg-white text-blue-600 hover:bg-blue-50 transition-colors">
                         搜索
                     </button>
                 </div>
@@ -31,152 +68,54 @@
         </div>
     </div>
 
-    <!-- Banner+搜索区 -->
-    <div th:unless="${enableNavigationBar}" class="w-full flex flex-col items-center justify-center pt-10 pb-2 animate__animated animate__fadeIn">
-        <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_2ks3pjua.json" background="transparent" speed="1" style="width: 120px; height: 120px; margin-bottom: 1.5rem;" loop autoplay></lottie-player>
-        <h1 class="handsome-bingeWatching-title font-black text-4xl md:text-5xl text-gray-900 mb-2 tracking-tight text-center" style="letter-spacing:1px;">[[${description}]]</h1>
-        <div class="handsome-bingeWatching-subtitle mb-6 text-lg md:text-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent text-center">[[${erDescription}]]</div>
-        <div class="likcc-glass flex flex-row items-center justify-center shadow-xl rounded-3xl px-6 py-4 w-full max-w-xl animate__animated animate__fadeInUp">
-            <form class="flex flex-row items-center w-full gap-3" onsubmit="return handleSearch(event);">
-                <svg class="w-7 h-7 text-blue-400 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input id="movie-search-input" type="text" name="keyword" class="flex-1 text-lg px-5 py-3 rounded-2xl border-0 outline-none bg-transparent placeholder-gray-400" placeholder="输入影视名称搜索" th:value="${param.keyword}" />
-                <button class="ml-2 px-7 py-3 rounded-2xl text-lg font-bold bg-gradient-to-r from-blue-500 to-indigo-400 text-white shadow-lg hover:from-blue-600 hover:to-indigo-500 transition-all duration-200" type="submit">搜索</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- 搜索弹窗 -->
-    <div id="search-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden handsome-bingeWatching-modal">
-        <div class="flex items-center justify-center min-h-screen px-4">
-            <div class="bg-white/80 backdrop-blur-xl rounded-3xl p-8 w-full max-w-xl shadow-2xl animate__animated animate__fadeInUp handsome-bingeWatching-modal-inner">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-bold text-gray-900">搜索影视</h2>
-                    <button onclick="closeSearchModal()" class="text-gray-400 hover:text-gray-700 transition-colors">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
+    <!-- 海报墙 -->
+    <div class="py-8">
+        <div class="movie-grid">
+            <!-- 无内容状态 -->
+            <div th:if="${#lists.isEmpty(movies)}" class="col-span-full flex flex-col items-center justify-center py-20">
+                <div class="w-24 h-24 mb-6 text-gray-400">
+                    <svg class="w-full h-full" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M7 4v16M17 4v16M3 8h18M3 16h18"/>
+                    </svg>
                 </div>
-                <form onsubmit="return handleSearch(event);" class="flex flex-col gap-6">
-                    <div class="relative flex items-center handsome-bingeWatching-searchbox">
-                        <span class="absolute left-5 top-1/2 -translate-y-1/2 text-blue-400">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <circle cx="11" cy="11" r="8"/>
-                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
-                            </svg>
-                        </span>
-                        <input
-                            id="modal-search-input"
-                            name="keyword"
-                            type="text"
-                            class="pl-14 pr-6 py-4 w-full rounded-2xl bg-white/70 backdrop-blur border-2 border-transparent focus:border-blue-400 transition-all duration-200 text-lg font-semibold placeholder-gray-400 focus:shadow-lg handsome-bingeWatching-input"
-                            placeholder="输入影视名称搜索"
-                            th:value="${param.keyword}"
-                            autocomplete="off"
-                            onfocus="this.select()"
-                        />
-                    </div>
-                    <button
-                        type="submit"
-                        class="w-full py-4 rounded-2xl text-lg font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-500 text-white shadow-lg hover:from-blue-500 hover:to-indigo-500 hover:scale-105 focus:scale-105 transition-all duration-200 handsome-bingeWatching-btn"
-                    >搜索</button>
-                </form>
+                <h2 class="text-2xl font-bold text-gray-700 mb-2">暂无影视内容</h2>
+                <p class="text-gray-500">敬请期待更多精彩内容</p>
             </div>
-        </div>
-    </div>
 
-    <!-- 海报墙主体 -->
-    <div class="flex-1 w-full flex flex-col items-center justify-start px-2 md:px-0">
-        <div id="movie-grid" class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-12 gap-x-8 py-10 animate__animated animate__fadeIn">
-            <div th:if="${#lists.isEmpty(movies)}" class="col-span-full flex flex-col items-center justify-center text-gray-400 py-10">
-                <svg width="120" height="120" viewBox="0 0 120 120" fill="none"><rect x="10" y="30" width="100" height="60" rx="12" fill="#f3f4f6"/><circle cx="40" cy="60" r="10" fill="#c7d2fe"/><rect x="60" y="50" width="30" height="20" rx="5" fill="#dbeafe"/><rect x="20" y="80" width="80" height="8" rx="4" fill="#e5e7eb"/></svg>
-                <div class="text-xl font-semibold mt-4">暂无海报记录，快去添加吧！</div>
-            </div>
-            <div th:each="movie : ${movies}" class="likcc-movie-card bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col cursor-pointer animate__animated animate__zoomIn" th:data-name="${movie.metadata.name}" style="height:370px;">
-                <img class="w-full h-64 object-cover lazy" th:data-src="${movie.spec.vod_pic}" th:alt="${movie.spec.vod_name}" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-                <div class="flex-1 flex items-end">
-                    <div class="w-full px-4 py-3 bg-gradient-to-t from-black/80 to-black/0 text-white text-lg font-bold rounded-b-3xl truncate" th:text="${movie.spec.vod_name}"></div>
+            <!-- 影视列表 -->
+            <div th:each="movie : ${movies}" 
+                 class="movie-card loading fade-in"
+                 th:data-name="${movie.metadata.name}">
+                <img class="lazy" 
+                     th:data-src="${movie.spec.vod_pic}"
+                     th:alt="${movie.spec.vod_name}" />
+                <div class="movie-info">
+                    <h3 class="text-white text-lg font-bold mb-1 truncate" 
+                        th:text="${movie.spec.vod_name}"></h3>
+                    <p class="text-gray-300 text-sm" 
+                       th:if="${movie.spec.vod_year != null}" 
+                       th:text="${movie.spec.vod_year}"></p>
                 </div>
             </div>
         </div>
-        <!-- 加载状态 -->
-        <div id="loading-spinner" class="hidden w-full flex justify-center py-8">
-            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-        </div>
+
         <!-- 分页控件 -->
-        <div th:if="${not #lists.isEmpty(movies)}" class="w-full flex justify-center py-8">
-            <div class="flex space-x-2">
-                <a th:if="${currentPage > 1}" th:href="@{/movies(page=${currentPage - 1},keyword=${param.keyword})}" class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors">上一页</a>
-                <span class="px-4 py-2">第 [[${currentPage}]] 页</span>
-                <a th:if="${currentPage < totalPages}" th:href="@{/movies(page=${currentPage + 1},keyword=${param.keyword})}" class="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors">下一页</a>
-            </div>
+        <div th:if="${not #lists.isEmpty(movies)}" class="flex justify-center gap-4 mt-8">
+            <a th:if="${currentPage > 1}" 
+               th:href="@{/movies(page=${currentPage - 1},keyword=${param.keyword})}"
+               class="px-6 py-2 bg-white rounded-full shadow hover:shadow-md transition-shadow">
+                上一页
+            </a>
+            <span class="px-6 py-2 bg-blue-500 text-white rounded-full">
+                第 [[${currentPage}]] 页
+            </span>
+            <a th:if="${currentPage < totalPages}" 
+               th:href="@{/movies(page=${currentPage + 1},keyword=${param.keyword})}"
+               class="px-6 py-2 bg-white rounded-full shadow hover:shadow-md transition-shadow">
+                下一页
+            </a>
         </div>
     </div>
-    <script>
-    // 懒加载实现
-    document.addEventListener("DOMContentLoaded", function() {
-        var lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
-        
-        if ("IntersectionObserver" in window) {
-            let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        let lazyImage = entry.target;
-                        lazyImage.src = lazyImage.dataset.src;
-                        lazyImage.classList.remove("lazy");
-                        lazyImageObserver.unobserve(lazyImage);
-                    }
-                });
-            });
-
-            lazyImages.forEach(function(lazyImage) {
-                lazyImageObserver.observe(lazyImage);
-            });
-        }
-    });
-
-    // 打开搜索弹窗
-    function openSearchModal() {
-        document.getElementById('search-modal').classList.remove('hidden');
-        document.getElementById('modal-search-input').focus();
-    }
-
-    // 关闭搜索弹窗
-    function closeSearchModal() {
-        document.getElementById('search-modal').classList.add('hidden');
-    }
-
-    // 处理搜索
-    function handleSearch(e) {
-        e.preventDefault();
-        const keyword = document.getElementById('movie-search-input')?.value.trim() || 
-                        document.getElementById('modal-search-input')?.value.trim() || '';
-        const url = keyword ? `/movies?keyword=${encodeURIComponent(keyword)}` : '/movies';
-        window.location.href = url;
-        return false;
-    }
-
-    // 电影卡片点击事件
-    document.querySelectorAll('.likcc-movie-card').forEach(function(card) {
-        card.addEventListener('click', function() {
-            const name = this.dataset.name;
-            window.location.href = `/movies/${name}`;
-        });
-    });
-
-    // 点击弹窗外部关闭弹窗
-    document.getElementById('search-modal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeSearchModal();
-        }
-    });
-
-    // 按ESC键关闭弹窗
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeSearchModal();
-        }
-    });
-    </script>
 </body>
 </html> 
