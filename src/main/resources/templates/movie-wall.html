@@ -10,6 +10,9 @@
 <body class="bg-light">
     <div class="container py-5">
         <div class="likcc-movie-wall">
+            <div th:if="${#lists.isEmpty(movies)}" class="likcc-movie-empty text-center text-muted py-5">
+                暂无海报记录，快去添加吧！
+            </div>
             <div th:each="movie : ${movies}" class="likcc-movie-card" th:data-name="${movie.metadata.name}">
                 <img class="likcc-movie-poster" th:src="${movie.spec.vod_pic}" th:alt="${movie.spec.vod_name}">
                 <div class="likcc-movie-title" th:text="${movie.spec.vod_name}"></div>

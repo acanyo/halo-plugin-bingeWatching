@@ -13,6 +13,7 @@ interface MovieInfo {
   vod_score: string;
   vod_content: string;
   type_name: string;
+  id: string;
 }
 
 interface FormState {
@@ -99,8 +100,8 @@ const isFormValid = computed(() => {
   return true;
 });
 
-const handleSelectMovie = (movie: MovieInfo) => {
-  const movieId = movie.vod_name; // 使用影片名称作为唯一标识
+const handleSelectMovie = (movie: MovieInfo & { id: string }) => {
+  const movieId = movie.id;
   if (selectedMovies.value.has(movieId)) {
     selectedMovies.value.delete(movieId);
   } else {
@@ -117,7 +118,7 @@ const handleConfirmSelection = async () => {
   saving.value = true;
   try {
     const selectedMovieList = movieList.value.filter(movie => 
-      selectedMovies.value.has(movie.vod_name)
+      selectedMovies.value.has(movie.id)
     ).map(movie => ({
       metadata: {
         name: "",
@@ -310,8 +311,8 @@ const handleSyncMovie = async () => {
     <div class="likcc-movie-grid">
       <div
         v-for="movie in movieList"
-        :key="movie.vod_name"
-        :class="['likcc-movie-item', { 'selected': selectedMovies.has(movie.vod_name) }]"
+        :key="movie.id"
+        :class="['likcc-movie-item', { 'selected': selectedMovies.has(movie.id) }]"
         @click="handleSelectMovie(movie)"
       >
         <div class="likcc-movie-poster">

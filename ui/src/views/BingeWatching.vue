@@ -411,7 +411,11 @@ onMounted(() => {
                   {{ movie.spec.type_name || '暂无类型' }}
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ movie.spec.vod_actor || '暂无演员' }}
+                  {{
+                    movie.spec.vod_actor && movie.spec.vod_actor.length > 10
+                      ? movie.spec.vod_actor.slice(0, 10) + '...'
+                      : movie.spec.vod_actor || '暂无演员'
+                  }}
                 </td>
                 <td class="px-4 py-4 table-td">
                   {{ movie.spec.vod_score || '暂无评分' }}
