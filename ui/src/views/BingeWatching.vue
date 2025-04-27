@@ -37,10 +37,10 @@ const checkedAll = ref(false);
 const selectedSort = useRouteQuery<string | undefined>("sort");
 const selectedType = useRouteQuery<string | undefined>("status");
 const movieStatus = ref<{ label: string; value: string | undefined; }[]>([
-  { label: '全部', value: undefined },
-  { label: '观看中', value: '观看中' },
-  { label: '完结', value: '完结' },
-  { label: '弃坑', value: '弃坑' }
+  { label: "全部", value: undefined },
+  { label: "观看中", value: "观看中" },
+  { label: "完结", value: "完结" },
+  { label: "弃坑", value: "弃坑" },
 ]);
 
 const page = ref(1);
