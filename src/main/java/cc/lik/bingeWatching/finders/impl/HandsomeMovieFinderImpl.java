@@ -4,6 +4,8 @@ import static org.springframework.data.domain.Sort.Order.asc;
 import static run.halo.app.extension.index.query.QueryFactory.all;
 import static run.halo.app.extension.index.query.QueryFactory.and;
 import static run.halo.app.extension.index.query.QueryFactory.equal;
+import static run.halo.app.extension.index.query.QueryFactory.contains;
+import static run.halo.app.extension.index.query.QueryFactory.or;
 
 import cc.lik.bingeWatching.entity.HandsomeMovie;
 import cc.lik.bingeWatching.finders.HandsomeMovieFinder;
@@ -69,6 +71,18 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
         return pageHandsomeMoviePost(FieldSelector.of(query), pageRequest);
     }
 
+    @Override
+    public Flux<HandsomeMovieVo> fuzzySearchByName(String keyword) {
+        var listOptions = new ListOptions();
+        var query = or(
+            contains("spec.vod_name", keyword),
+            contains("spec.vod_en", keyword),
+            contains("spec.vod_content", keyword)
+        );
+        listOptions.setFieldSelector(FieldSelector.of(query));
+        return client.listAll(HandsomeMovie.class, listOptions, defaultSort())
+            .flatMap(this::getHandsomeMovieVo);
+    }
 
     private Mono<ListResult<HandsomeMovieVo>> pageHandsomeMoviePost(FieldSelector fieldSelector, PageRequest page){
         var listOptions = new ListOptions();

@@ -4,43 +4,54 @@ body {
 
 .likcc-movie-wall {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 18px 8px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 32px 24px;
     justify-items: center;
-    padding: 32px 0 24px 0;
-    max-width: 1600px;
-    margin: 0 auto;
+    padding: 32px 0;
 }
 
 .likcc-movie-card {
-    background: #23262e;
-    border-radius: 6px;
+    position: relative;
+    width: 180px;
+    height: 270px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-    border: 1.5px solid #23262e;
-    width: 140px;
-    transition: transform 0.22s cubic-bezier(.22,1,.36,1), box-shadow 0.22s, border-color 0.22s;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    background: #fff;
+    transition: box-shadow 0.3s, transform 0.3s;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    position: relative;
-    cursor: pointer;
+    justify-content: flex-end;
 }
 
 .likcc-movie-card:hover {
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
     transform: scale(1.04) translateY(-4px);
-    box-shadow: 0 8px 24px 0 rgba(0,0,0,0.28);
-    border-color: #ffd700;
-    z-index: 2;
 }
 
 .likcc-movie-poster {
     width: 100%;
-    height: 200px;
+    height: 100%;
     object-fit: cover;
-    background: #222;
-    border-radius: 6px 6px 0 0;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    display: block;
+}
+
+.likcc-movie-title {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 10px 8px 10px;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    z-index: 2;
 }
 
 .likcc-movie-info {
@@ -51,18 +62,6 @@ body {
     flex-direction: column;
     align-items: flex-start;
     min-height: 70px;
-}
-
-.likcc-movie-title {
-    font-size: 1em;
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 2px;
-    line-height: 1.2;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
 }
 
 .likcc-movie-meta {
@@ -91,27 +90,16 @@ body {
 
 @media (max-width: 600px) {
     .likcc-movie-wall {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        gap: 10px 4px;
-        padding: 8px 0;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 16px 8px;
     }
     .likcc-movie-card {
-        width: 100px;
-        border-radius: 4px;
-    }
-    .likcc-movie-poster {
-        height: 120px;
-        border-radius: 4px 4px 0 0;
-    }
-    .likcc-movie-info {
-        min-height: 48px;
-        padding: 4px 3px 3px 3px;
+        width: 120px;
+        height: 180px;
     }
     .likcc-movie-title {
-        font-size: 0.92em;
-    }
-    .likcc-movie-meta {
-        font-size: 0.75em;
+        font-size: 13px;
+        padding: 8px 6px 6px 6px;
     }
 }
 

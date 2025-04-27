@@ -33,12 +33,25 @@ public class MovieRouter {
     }
 
     private Mono<ServerResponse> renderMoviePage(ServerRequest request) {
+        String keyword = request.queryParam("keyword").orElse(null);
         return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "movie-wall")
-            .flatMap(templateName -> ServerResponse.ok().render(templateName,
-                Map.of(
-                    "title", getPosterWallTitle(),
-                    "movies", movieFinder.listAll()
-                )));
+            .flatMap(templateName -> {
+                if (keyword != null && !keyword.isBlank()) {
+                    return movieFinder.fuzzySearchByName(keyword).collectList()
+                        .flatMap(filtered -> ServerResponse.ok().render(templateName,
+                            Map.of(
+                                "title", getPosterWallTitle(),
+                                "movies", filtered
+                            )));
+                } else {
+                    return movieFinder.listAll().collectList()
+                        .flatMap(movies -> ServerResponse.ok().render(templateName,
+                            Map.of(
+                                "title", getPosterWallTitle(),
+                                "movies", movies
+                            )));
+                }
+            });
     }
 
     private Mono<ServerResponse> renderMovieDetailPage(ServerRequest request) {
