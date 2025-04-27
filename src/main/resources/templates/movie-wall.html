@@ -10,8 +10,29 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body id="likcc-binge-body" class="min-h-screen bg-gradient-to-b from-[#f7fafd] to-[#e0e7ef] flex flex-col">
+    <!-- 顶部导航栏 -->
+    <div th:if="${enableNavigationBar}" class="w-full bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_2ks3pjua.json" background="transparent" speed="1" style="width: 40px; height: 40px;" loop autoplay></lottie-player>
+                    <span class="ml-2 text-xl font-bold text-gray-900">[[${description}]]</span>
+                </div>
+                <div class="flex items-center">
+                    <button onclick="openSearchModal()" class="flex items-center px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        搜索
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Banner+搜索区 -->
-    <div class="w-full flex flex-col items-center justify-center pt-10 pb-2 animate__animated animate__fadeIn">
+    <div th:unless="${enableNavigationBar}" class="w-full flex flex-col items-center justify-center pt-10 pb-2 animate__animated animate__fadeIn">
         <lottie-player src="https://assets2.lottiefiles.com/packages/lf20_2ks3pjua.json" background="transparent" speed="1" style="width: 120px; height: 120px; margin-bottom: 1.5rem;" loop autoplay></lottie-player>
         <h1 class="handsome-bingeWatching-title font-black text-4xl md:text-5xl text-gray-900 mb-2 tracking-tight text-center" style="letter-spacing:1px;">[[${description}]]</h1>
         <div class="handsome-bingeWatching-subtitle mb-6 text-lg md:text-xl font-semibold bg-gradient-to-r from-blue-500 to-indigo-400 bg-clip-text text-transparent text-center">[[${erDescription}]]</div>
@@ -23,6 +44,47 @@
             </form>
         </div>
     </div>
+
+    <!-- 搜索弹窗 -->
+    <div id="search-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden handsome-bingeWatching-modal">
+        <div class="flex items-center justify-center min-h-screen px-4">
+            <div class="bg-white/80 backdrop-blur-xl rounded-3xl p-8 w-full max-w-xl shadow-2xl animate__animated animate__fadeInUp handsome-bingeWatching-modal-inner">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-gray-900">搜索影视</h2>
+                    <button onclick="closeSearchModal()" class="text-gray-400 hover:text-gray-700 transition-colors">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <form onsubmit="return handleSearch(event);" class="flex flex-col gap-6">
+                    <div class="relative flex items-center handsome-bingeWatching-searchbox">
+                        <span class="absolute left-5 top-1/2 -translate-y-1/2 text-blue-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <circle cx="11" cy="11" r="8"/>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                            </svg>
+                        </span>
+                        <input
+                            id="modal-search-input"
+                            name="keyword"
+                            type="text"
+                            class="pl-14 pr-6 py-4 w-full rounded-2xl bg-white/70 backdrop-blur border-2 border-transparent focus:border-blue-400 transition-all duration-200 text-lg font-semibold placeholder-gray-400 focus:shadow-lg handsome-bingeWatching-input"
+                            placeholder="输入影视名称搜索"
+                            th:value="${param.keyword}"
+                            autocomplete="off"
+                            onfocus="this.select()"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        class="w-full py-4 rounded-2xl text-lg font-bold bg-gradient-to-r from-blue-400 via-indigo-400 to-blue-500 text-white shadow-lg hover:from-blue-500 hover:to-indigo-500 hover:scale-105 focus:scale-105 transition-all duration-200 handsome-bingeWatching-btn"
+                    >搜索</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- 海报墙主体 -->
     <div class="flex-1 w-full flex flex-col items-center justify-start px-2 md:px-0">
         <div id="movie-grid" class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-y-12 gap-x-8 py-10 animate__animated animate__fadeIn">
@@ -73,9 +135,22 @@
         }
     });
 
+    // 打开搜索弹窗
+    function openSearchModal() {
+        document.getElementById('search-modal').classList.remove('hidden');
+        document.getElementById('modal-search-input').focus();
+    }
+
+    // 关闭搜索弹窗
+    function closeSearchModal() {
+        document.getElementById('search-modal').classList.add('hidden');
+    }
+
+    // 处理搜索
     function handleSearch(e) {
         e.preventDefault();
-        const keyword = document.getElementById('movie-search-input').value.trim();
+        const keyword = document.getElementById('movie-search-input')?.value.trim() || 
+                        document.getElementById('modal-search-input')?.value.trim() || '';
         const url = keyword ? `/movies?keyword=${encodeURIComponent(keyword)}` : '/movies';
         window.location.href = url;
         return false;
@@ -87,6 +162,20 @@
             const name = this.dataset.name;
             window.location.href = `/movies/${name}`;
         });
+    });
+
+    // 点击弹窗外部关闭弹窗
+    document.getElementById('search-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeSearchModal();
+        }
+    });
+
+    // 按ESC键关闭弹窗
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeSearchModal();
+        }
     });
     </script>
 </body>

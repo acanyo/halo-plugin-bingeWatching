@@ -44,6 +44,13 @@ spec:
           validation: required
           value: "海报墙"
           help: "这里是你的网址标题"
+        - $formkit: attachment
+          label: 导航Logo
+          name: navLogo
+          id: navLogo
+          key: navLogo
+          value: "https://www.lik.cc/upload/logo.png"
+          help: "网站顶部logo"
         - $formkit: checkbox
           label: 开启顶部栏
           name: enableNavigationBar

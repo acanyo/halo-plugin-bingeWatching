@@ -54,6 +54,7 @@ public class MovieRouter {
                         model.put("description", config.getDescription());
                         model.put("erDescription", config.getErDescription());
                         model.put("enableNavigationBar", config.getEnableNavigationBar());
+                        model.put("navLogo", config.getNavLogo());
                         model.put("movies", listResult.getItems());
                         model.put("currentPage", listResult.getPage());
                         model.put("totalPages", (int) Math.ceil((double) listResult.getTotal() / size));
