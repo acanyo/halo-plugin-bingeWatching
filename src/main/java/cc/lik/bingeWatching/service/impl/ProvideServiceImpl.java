@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -86,6 +87,7 @@ public class ProvideServiceImpl implements ProvideService {
                                             filteredMovie.set(field, movieNode.get(field));
                                         }
                                     });
+                                    filteredMovie.put("id", UUID.randomUUID().toString());
                                     filteredList.add(filteredMovie);
                                 }
                             }

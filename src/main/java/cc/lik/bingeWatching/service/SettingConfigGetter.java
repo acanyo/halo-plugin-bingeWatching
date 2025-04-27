@@ -11,7 +11,11 @@ public interface SettingConfigGetter {
     class BasicConfig {
         public static final String GROUP = "basic";
         private String title;
+        private String description;
+        private String navLogo;
+        private String erDescription;
         private Boolean enablePicDump;
+        private Boolean enableNavigationBar;
         private String fileGroup;
         private String filePolicy;
         private Boolean isProxy;

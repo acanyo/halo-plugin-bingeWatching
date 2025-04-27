@@ -37,10 +37,10 @@ const checkedAll = ref(false);
 const selectedSort = useRouteQuery<string | undefined>("sort");
 const selectedType = useRouteQuery<string | undefined>("status");
 const movieStatus = ref<{ label: string; value: string | undefined; }[]>([
-  { label: '全部', value: undefined },
-  { label: '观看中', value: '观看中' },
-  { label: '完结', value: '完结' },
-  { label: '弃坑', value: '弃坑' }
+  { label: "全部", value: undefined },
+  { label: "观看中", value: "观看中" },
+  { label: "完结", value: "完结" },
+  { label: "弃坑", value: "弃坑" },
 ]);
 
 const page = ref(1);
@@ -411,7 +411,11 @@ onMounted(() => {
                   {{ movie.spec.type_name || '暂无类型' }}
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ movie.spec.vod_actor || '暂无演员' }}
+                  {{
+                    movie.spec.vod_actor && movie.spec.vod_actor.length > 10
+                      ? movie.spec.vod_actor.slice(0, 10) + '...'
+                      : movie.spec.vod_actor || '暂无演员'
+                  }}
                 </td>
                 <td class="px-4 py-4 table-td">
                   {{ movie.spec.vod_score || '暂无评分' }}

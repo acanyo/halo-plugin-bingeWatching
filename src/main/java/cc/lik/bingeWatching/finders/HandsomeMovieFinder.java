@@ -15,4 +15,10 @@ public interface HandsomeMovieFinder {
     Flux<HandsomeMovieVo> getByMetadataName(String MetadataName);
 
     Mono<ListResult<HandsomeMovieVo>> listByName(Integer page, Integer size,String movieName);
+
+    /**
+     * 根据名称模糊查询影视
+     */
+    Flux<HandsomeMovieVo> fuzzySearchByName(String keyword);
+    Mono<ListResult<HandsomeMovieVo>>  listFuzzySearchByName(Integer page, Integer size,String keyword);
 }
