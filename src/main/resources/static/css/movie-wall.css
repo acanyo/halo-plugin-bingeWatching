@@ -1,32 +1,21 @@
 .likcc-movie-wall {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 32px 24px;
-    justify-items: center;
-    padding: 32px 0;
+    grid-template-columns: repeat(7, 1fr); /* 7列布局 */
+    gap: 12px; /* 减小间距 */
     max-width: 1400px;
     margin: 0 auto;
+    padding: 16px;
 }
 
 .likcc-movie-card {
     position: relative;
-    width: 180px;
-    height: 270px;
-    border-radius: 16px;
+    width: 100%;
+    height: 260px; /* 调整高度 */
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-    background: #fff;
-    transition: transform 0.25s cubic-bezier(.22,1,.36,1), box-shadow 0.22s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
     cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-}
-
-.likcc-movie-card:hover {
-    transform: translateY(-10px) scale(1.04) rotateZ(-1deg);
-    box-shadow: 0 12px 40px 0 rgba(79,140,255,0.18), 0 2px 8px rgba(0,0,0,0.10);
-    z-index: 2;
 }
 
 .likcc-movie-poster {
@@ -42,39 +31,48 @@
     opacity: 1;
 }
 
+.likcc-movie-card:hover {
+    transform: translateY(-5px);
+}
+
 .likcc-movie-info {
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.7) 100%);
-    padding: 12px 10px 8px 10px;
+    background: linear-gradient(180deg,rgba(0,0,0,0) 0%,rgba(0,0,0,0.95) 100%);
+    padding: 30px 12px 12px;
     color: #fff;
 }
 
 .likcc-movie-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 0.5px;
 }
 
 .likcc-movie-meta {
-    font-size: 0.85em;
-    color: #b0b3bb;
+    font-size: 13px;
+    color: rgba(255,255,255,0.95);
     display: flex;
     flex-wrap: wrap;
     gap: 6px 10px;
     align-items: center;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
 }
 
 .likcc-movie-status {
-    font-size: 0.85em;
-    padding: 2px 6px;
+    font-size: 12px;
+    padding: 2px 8px;
     border-radius: 4px;
     margin-top: 6px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 
 .likcc-status-watching {
@@ -92,20 +90,45 @@
     color: white;
 }
 
-@media (max-width: 600px) {
+/* 响应式布局调整 */
+@media (max-width: 1400px) {
     .likcc-movie-wall {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: 16px 8px;
+        grid-template-columns: repeat(6, 1fr); /* 6列 */
+    }
+}
+
+@media (max-width: 1200px) {
+    .likcc-movie-wall {
+        grid-template-columns: repeat(5, 1fr); /* 5列 */
+    }
+}
+
+@media (max-width: 992px) {
+    .likcc-movie-wall {
+        grid-template-columns: repeat(4, 1fr); /* 4列 */
+    }
+}
+
+@media (max-width: 768px) {
+    .likcc-movie-wall {
+        grid-template-columns: repeat(3, 1fr); /* 3列 */
+        gap: 8px;
     }
     
     .likcc-movie-card {
-        width: 120px;
-        height: 180px;
+        height: 220px;
+    }
+}
+
+@media (max-width: 480px) {
+    .likcc-movie-wall {
+        grid-template-columns: repeat(2, 1fr); /* 2列 */
+        padding: 8px;
+        gap: 8px;
     }
     
-    .likcc-movie-title {
-        font-size: 13px;
-        padding: 8px 6px 6px 6px;
+    .likcc-movie-card {
+        height: 200px;
     }
 }
 
@@ -235,30 +258,6 @@ body#likcc-binge-body .likcc-movie-card {
 body#likcc-binge-body .likcc-movie-card:hover {
   transform: translateY(-10px) scale(1.04) rotateZ(-1deg);
   box-shadow: 0 12px 40px 0 rgba(79,140,255,0.18), 0 2px 8px rgba(0,0,0,0.10);
-  z-index: 2;
-}
-
-body#likcc-binge-body .likcc-movie-wall {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px 8px;
-  justify-items: center;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 20px 0 28px 0;
-}
-body#likcc-binge-body .likcc-movie-card {
-  opacity: 0;
-  transform: translateY(32px) scale(0.98);
-  animation: likcc-fadein-up 0.5s cubic-bezier(.4,0,.2,1) forwards;
-  animation-delay: var(--likcc-delay, 0s);
-  transition: box-shadow 0.16s cubic-bezier(.4,0,.2,1), transform 0.16s cubic-bezier(.4,0,.2,1);
-  height: 270px;
-  min-width: 0;
-}
-body#likcc-binge-body .likcc-movie-card:hover {
-  transform: translateY(-4px) scale(1.025) rotateZ(-0.5deg);
-  box-shadow: 0 8px 24px 0 rgba(79,140,255,0.13), 0 2px 8px rgba(0,0,0,0.07);
   z-index: 2;
 }
 body#likcc-binge-body .likcc-movie-card img,
@@ -453,105 +452,118 @@ body#likcc-binge-body .likcc-search-card button:hover {
 /* 布局样式 */
 .movie-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    max-width: 1200px;
+    grid-template-columns: repeat(7, 1fr); /* 7列布局 */
+    gap: 12px; /* 减小间距 */
+    padding: 16px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
 }
 
-/* 卡片基础样式 */
+/* 电影卡片样式 */
 .movie-card {
     position: relative;
-    aspect-ratio: 2/3;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    aspect-ratio: 2/3;
+    background: #f5f5f5;
+    height: 240px;
 }
 
+/* 卡片悬浮效果 */
+.movie-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* 图片加载效果 */
 .movie-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
-}
-
-.movie-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0));
-    padding: 1rem;
-    transform: translateY(100%);
-    transition: transform 0.3s ease;
-}
-
-.movie-card:hover .movie-info {
-    transform: translateY(0);
-}
-
-.movie-card:hover {
-    transform: scale(1.05);
-}
-
-/* 加载状态 */
-.movie-card.loading::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite linear;
 }
 
-.movie-card.loading::after {
-    content: '';
+.movie-card img.loaded {
+    opacity: 1;
+    background: none;
+    animation: none;
+}
+
+/* 信息层样式 */
+.movie-info {
     position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 40px;
-    height: 40px;
-    border: 3px solid #e0e0e0;
-    border-top-color: #6366f1;
-    border-radius: 50%;
-    animation: spin 1s infinite linear;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, transparent 100%);
+    padding: 60px 12px 12px;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 动画效果 */
+/* 悬浮时显示信息 */
+.movie-card:hover .movie-info {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* 标题和年份样式 */
+.movie-info h3 {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+}
+
+.movie-info p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.875rem;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+}
+
+.movie-card:hover .movie-info h3,
+.movie-card:hover .movie-info p {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* 加载动画 */
 @keyframes shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
 }
 
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* 淡入动画 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .fade-in {
-    animation: fadeIn 0.3s ease-out forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* 响应式布局 */
-@media (max-width: 768px) {
-    .movie-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        padding: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .movie-grid {
-        grid-template-columns: 1fr;
-    }
+    animation: fadeIn 0.5s ease forwards;
 }
 
 /* 页面头部样式 */
@@ -559,17 +571,6 @@ body#likcc-binge-body .likcc-search-card button:hover {
     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
 }
 
-/* 搜索区域样式 */
-.search-container {
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.search-input {
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px);
-}
-
 /* 动画效果 */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -579,11 +580,6 @@ body#likcc-binge-body .likcc-search-card button:hover {
 @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
 }
 
 .fade-in {
@@ -605,4 +601,111 @@ body#likcc-binge-body .likcc-search-card button:hover {
     .movie-title {
         font-size: 13px;
     }
+}
+
+/* 分页样式 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 3rem 0;
+    padding: 0 1rem;
+}
+
+.pagination a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    font-weight: 500;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(99, 102, 241, 0.2);
+}
+
+.pagination a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+.pagination span {
+    padding: 0.75rem 1.5rem;
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    font-weight: 500;
+    border-radius: 9999px;
+}
+
+/* 加载动画容器 */
+.loading-skeleton {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.loading-skeleton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: shimmer 1.5s infinite;
+}
+
+.loading-skeleton .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+/* 图片加载状态 */
+.movie-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.movie-card img.loaded {
+    opacity: 1;
+}
+
+.movie-card img.loaded + .loading-skeleton {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 动画关键帧 */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
 } 

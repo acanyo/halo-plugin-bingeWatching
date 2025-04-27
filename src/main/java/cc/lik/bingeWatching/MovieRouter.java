@@ -28,7 +28,7 @@ public class MovieRouter {
     private final TemplateNameResolver templateNameResolver;
     private final HandsomeMovieFinder movieFinder;
     private final SettingConfigGetter settingConfigGetter;
-    private static final int DEFAULT_PAGE_SIZE = 20;
+    private static final int DEFAULT_PAGE_SIZE = 21;
 
     @Bean
     RouterFunction<ServerResponse> movieRouterFunction() {
@@ -44,7 +44,7 @@ public class MovieRouter {
                 
                 String keyword = request.queryParam("keyword").orElse(null);
                 int page = request.queryParam("page").map(Integer::parseInt).orElse(1);
-                int size = 12;
+                int size = DEFAULT_PAGE_SIZE;
                 
                 Mono<run.halo.app.extension.ListResult<HandsomeMovieVo>> moviesMono = 
                     (keyword != null && !keyword.isBlank())

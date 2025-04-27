@@ -6,6 +6,7 @@ class MovieWall {
     init() {
         this.initLazyLoading();
         this.initEventListeners();
+        this.initSearchHandlers();
     }
 
     initLazyLoading() {
@@ -48,22 +49,6 @@ class MovieWall {
     }
 
     initEventListeners() {
-        // 搜索功能
-        const searchInputs = {
-            nav: document.getElementById('nav-search-input'),
-            banner: document.getElementById('banner-search-input')
-        };
-
-        Object.values(searchInputs).forEach(input => {
-            if (input) {
-                input.addEventListener('keyup', (e) => {
-                    if (e.key === 'Enter') {
-                        this.handleSearch(e);
-                    }
-                });
-            }
-        });
-
         // 电影卡片点击
         document.querySelectorAll('.movie-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -75,13 +60,33 @@ class MovieWall {
         });
     }
 
-    handleSearch(e) {
-        const input = e.target;
-        const keyword = input.value.trim();
+    initSearchHandlers() {
+        // 搜索按钮点击事件
+        const searchButtons = document.querySelectorAll('button');
+        searchButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                const input = e.target.closest('.relative')?.querySelector('input');
+                if (input) {
+                    this.handleSearch(input.value);
+                }
+            });
+        });
+
+        // 搜索输入框回车事件
+        const searchInputs = document.querySelectorAll('input[type="text"]');
+        searchInputs.forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.handleSearch(e.target.value);
+                }
+            });
+        });
+    }
+
+    handleSearch(value) {
+        const keyword = value.trim();
         if (keyword) {
             window.location.href = `/movies?keyword=${encodeURIComponent(keyword)}`;
-        } else {
-            window.location.href = '/movies';
         }
     }
 
@@ -92,5 +97,5 @@ class MovieWall {
 
 // 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', () => {
-    new MovieWall();
+    window.movieWall = new MovieWall();
 }); 
