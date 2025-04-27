@@ -83,6 +83,19 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
         return client.listAll(HandsomeMovie.class, listOptions, defaultSort())
             .flatMap(this::getHandsomeMovieVo);
     }
+    @Override
+    public  Mono<ListResult<HandsomeMovieVo>>  listFuzzySearchByName(Integer page, Integer size,String keyword) {
+        var listOptions = new ListOptions();
+        var query = or(
+            contains("spec.vod_name", keyword),
+            contains("spec.vod_en", keyword),
+            contains("spec.vod_content", keyword)
+        );
+        listOptions.setFieldSelector(FieldSelector.of(query));
+        var pageRequest = PageRequestImpl.of(pageNullSafe(page), sizeNullSafe(size), defaultSort());
+        return getListResultMono(listOptions, pageRequest, pageRequest.getPageNumber(),
+            pageRequest.getPageSize());
+    }
 
     private Mono<ListResult<HandsomeMovieVo>> pageHandsomeMoviePost(FieldSelector fieldSelector, PageRequest page){
         var listOptions = new ListOptions();
@@ -91,6 +104,12 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
             query = and(query, fieldSelector.query());
         }
         listOptions.setFieldSelector(FieldSelector.of(query));
+        return getListResultMono(listOptions, page, page.getPageNumber(), page.getPageSize());
+
+    }
+
+    private Mono<ListResult<HandsomeMovieVo>> getListResultMono(ListOptions listOptions,
+        PageRequest page, int page1, int page2) {
         return client.listBy(HandsomeMovie.class, listOptions, page)
             .flatMap(list -> Flux.fromStream(list.get())
                 .concatMap(this::getHandsomeMovieVo)
@@ -100,8 +119,7 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
                 )
             )
             .defaultIfEmpty(
-                new ListResult<>(page.getPageNumber(), page.getPageSize(), 0L, List.of()));
-
+                new ListResult<>(page1, page2, 0L, List.of()));
     }
 
     static Sort defaultLinkSort() {

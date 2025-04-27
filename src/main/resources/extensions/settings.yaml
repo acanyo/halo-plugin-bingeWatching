@@ -39,9 +39,34 @@ spec:
         - $formkit: text
           label: 网站标题
           name: title
+          id: title
+          key: title
           validation: required
           value: "海报墙"
           help: "这里是你的网址标题"
+        - $formkit: checkbox
+          label: 开启顶部栏
+          name: enableNavigationBar
+          id: enableNavigationBar
+          key: enableNavigationBar
+          value: true
+          help: "为你的海报墙开启一个顶部栏"
+        - $formkit: text
+          label: 一级描述
+          name: description
+          key: description
+          id: description
+          validation: required
+          value: "发现你的下一个心动剧集"
+          help: "海报墙介绍"
+        - $formkit: text
+          label: 二级描述
+          name: erDescription
+          key: erDescription
+          id: erDescription
+          validation: required
+          value: "热门推荐、最新上线、经典回顾，尽在海报墙"
+          help: "海报墙二级介绍"
         - $formkit: checkbox
           label: 开启图片转存
           name: enablePicDump

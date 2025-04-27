@@ -1,7 +1,3 @@
-body {
-    background: #181c24;
-}
-
 .likcc-movie-wall {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -18,7 +14,7 @@ body {
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(0,0,0,0.12);
     background: #fff;
-    transition: box-shadow 0.3s, transform 0.3s;
+    transition: transform 0.25s cubic-bezier(.22,1,.36,1), box-shadow 0.22s;
     cursor: pointer;
     display: flex;
     flex-direction: column;
@@ -26,8 +22,9 @@ body {
 }
 
 .likcc-movie-card:hover {
-    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-    transform: scale(1.04) translateY(-4px);
+    transform: translateY(-10px) scale(1.04) rotateZ(-1deg);
+    box-shadow: 0 12px 40px 0 rgba(79,140,255,0.18), 0 2px 8px rgba(0,0,0,0.10);
+    z-index: 2;
 }
 
 .likcc-movie-poster {
@@ -210,4 +207,237 @@ body {
 @keyframes likcc-spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* 全局字体与背景，仅作用于本页面 */
+body#likcc-binge-body {
+  font-family: 'Inter', 'Noto Sans SC', Arial, sans-serif;
+}
+
+body#likcc-binge-body .likcc-glass {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(79,140,255,0.18);
+}
+
+body#likcc-binge-body .likcc-movie-card {
+  transition: transform 0.25s cubic-bezier(.22,1,.36,1), box-shadow 0.22s;
+}
+body#likcc-binge-body .likcc-movie-card:hover {
+  transform: translateY(-10px) scale(1.04) rotateZ(-1deg);
+  box-shadow: 0 12px 40px 0 rgba(79,140,255,0.18), 0 2px 8px rgba(0,0,0,0.10);
+  z-index: 2;
+}
+
+body#likcc-binge-body .likcc-movie-wall {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px 8px;
+  justify-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px 0 28px 0;
+}
+body#likcc-binge-body .likcc-movie-card {
+  opacity: 0;
+  transform: translateY(32px) scale(0.98);
+  animation: likcc-fadein-up 0.5s cubic-bezier(.4,0,.2,1) forwards;
+  animation-delay: var(--likcc-delay, 0s);
+  transition: box-shadow 0.16s cubic-bezier(.4,0,.2,1), transform 0.16s cubic-bezier(.4,0,.2,1);
+  height: 270px;
+  min-width: 0;
+}
+body#likcc-binge-body .likcc-movie-card:hover {
+  transform: translateY(-4px) scale(1.025) rotateZ(-0.5deg);
+  box-shadow: 0 8px 24px 0 rgba(79,140,255,0.13), 0 2px 8px rgba(0,0,0,0.07);
+  z-index: 2;
+}
+body#likcc-binge-body .likcc-movie-card img,
+body#likcc-binge-body .likcc-movie-poster {
+  height: 100%;
+  object-fit: cover;
+  border-radius: 16px 16px 0 0;
+}
+@keyframes likcc-fadein-up {
+  from { opacity: 0; transform: translateY(32px) scale(0.98);}
+  to { opacity: 1; transform: none;}
+}
+body#likcc-binge-body .likcc-glass,
+body#likcc-binge-body .likcc-search-card {
+  transition: box-shadow 0.18s, background 0.18s, transform 0.18s;
+}
+body#likcc-binge-body .likcc-search-card:focus-within,
+body#likcc-binge-body .likcc-search-card:hover {
+  box-shadow: 0 12px 40px 0 rgba(79,140,255,0.22), 0 2px 8px rgba(0,0,0,0.12);
+  transform: scale(1.02);
+}
+body#likcc-binge-body .likcc-search-card button:hover {
+  filter: brightness(1.08);
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(79,140,255,0.18);
+}
+
+/* 基础样式 */
+.likcc-binge-body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* 玻璃态效果 */
+.likcc-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* 卡片样式 */
+.likcc-movie-card {
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.likcc-movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 懒加载图片样式 */
+.likcc-movie-card img.lazy {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.likcc-movie-card img {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* 加载动画 */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.likcc-movie-card img.lazy {
+    background: linear-gradient(to right, #f6f7f8 8%, #edeef1 18%, #f6f7f8 33%);
+    background-size: 2000px 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+/* 分页按钮样式 */
+.likcc-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.likcc-pagination button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(to right, #3b82f6, #6366f1);
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.likcc-pagination button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.likcc-pagination button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 加载状态 */
+#loading-spinner {
+    display: none;
+    margin: 2rem 0;
+}
+
+#loading-spinner.active {
+    display: flex;
+}
+
+/* 响应式调整 */
+@media (max-width: 640px) {
+    .likcc-movie-card {
+        height: 300px !important;
+    }
+    
+    .likcc-movie-card img {
+        height: 200px;
+    }
+}
+
+/* 搜索框动画 */
+@keyframes searchFocus {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.02);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+#movie-search-input:focus {
+    animation: searchFocus 0.3s ease;
+}
+
+/* 卡片标题渐变 */
+.likcc-movie-card .title-gradient {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+    padding: 1rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+/* 空状态动画 */
+@keyframes emptyStatePulse {
+    0% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.5;
+    }
+}
+
+.likcc-empty-state {
+    animation: emptyStatePulse 2s infinite;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 } 
