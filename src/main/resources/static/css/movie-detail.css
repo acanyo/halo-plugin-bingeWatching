@@ -1,0 +1,202 @@
+/* 主题变量 */
+:root {
+    --likcc-handsome-theme-color: #3b82f6;
+    --likcc-handsome-title-color: #ffffff;
+    --likcc-handsome-description-color: #9ca3af;
+}
+
+/* 全局样式 */
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 主题相关样式 */
+.likcc-handsome-theme-bg { background-color: var(--likcc-handsome-theme-color); }
+.likcc-handsome-theme-text { color: var(--likcc-handsome-theme-color); }
+.likcc-handsome-title-text { color: var(--likcc-handsome-title-color); }
+.likcc-handsome-desc-text { color: var(--likcc-handsome-description-color); }
+
+/* 毛玻璃效果 */
+.likcc-handsome-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* 悬停缩放效果 */
+.likcc-handsome-hover-scale {
+    transition: transform 0.3s ease;
+}
+.likcc-handsome-hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* 自定义动画 */
+.likcc-handsome-fade-up {
+    animation: fadeInUp 1s ease-out;
+}
+
+.likcc-handsome-fade-in {
+    animation: fadeIn 1s ease-out;
+}
+
+/* 加载动画 */
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.likcc-handsome-loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+/* 页面布局 */
+.likcc-handsome-movie-detail {
+    min-height: 100vh;
+}
+
+/* 海报样式 */
+.likcc-handsome-poster {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.likcc-handsome-poster-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2), transparent);
+}
+
+.likcc-handsome-poster img {
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.likcc-handsome-poster:hover img {
+    transform: scale(1.05);
+}
+
+/* 背景图片模糊效果 */
+.blur-backdrop {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* 信息卡片样式 */
+.likcc-handsome-info-card {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    padding: 1.5rem;
+}
+
+/* 状态标签样式 */
+.likcc-handsome-status {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+}
+
+/* 导航栏样式 */
+.likcc-handsome-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+}
+
+/* 响应式布局 */
+@media (max-width: 1024px) {
+    .likcc-handsome-poster {
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .likcc-handsome-poster {
+        width: 180px;
+    }
+}
+
+@media (max-width: 640px) {
+    .likcc-handsome-poster {
+        width: 140px;
+    }
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* 文本渐变效果 */
+.text-gradient {
+    background: linear-gradient(to right, #60a5fa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 玻璃态卡片效果 */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* 动画关键帧 */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+} 

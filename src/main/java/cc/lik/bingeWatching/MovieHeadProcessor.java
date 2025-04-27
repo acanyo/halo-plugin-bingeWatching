@@ -33,6 +33,8 @@ public class MovieHeadProcessor implements TemplateHeadProcessor {
             <!-- bingeWatching start -->
             <link rel="stylesheet" type="text/css" href="/plugins/bingeWatching/assets/static/css/movie-wall.css?version=${version}" />
             <script type="text/javascript" src="/plugins/bingeWatching/assets/static/js/movie-wall.js?version=${version}"></script>
+            <link rel="stylesheet" type="text/css" href="/plugins/bingeWatching/assets/static/css/movie-wall.js?version=${version}" />
+            <script type="text/javascript" src="/plugins/bingeWatching/assets/static/js/movie-detail.js?version=${version}"></script>
             <!-- bingeWatching end -->
             """, properties);
 
