@@ -305,7 +305,7 @@ const handleSyncMovie = async () => {
     title="请选择影视"
     :visible="showMovieSelection"
     :width="1000"
-    @update:visible="(v) => showMovieSelection = v"
+    @update:visible="(v: boolean) => showMovieSelection = v"
     class="movie-selection-modal"
   >
     <div class="likcc-movie-grid">

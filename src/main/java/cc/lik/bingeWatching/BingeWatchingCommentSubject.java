@@ -35,7 +35,7 @@ public class BingeWatchingCommentSubject implements CommentSubject<HandsomeMovie
             .map(handsomeMovie -> {
                 var url = externalLinkProcessor
                     .processLink("/movies/" + handsomeMovie.getMetadata().getName());
-                return new SubjectDisplay(handsomeMovie.getSpec().getVod_name(), url, "追剧");
+                return new SubjectDisplay(handsomeMovie.getSpec().getVod_name(), url, "海报墙");
             });
     }
 

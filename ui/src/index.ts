@@ -48,7 +48,7 @@ export default definePlugin({
           resolve: (subject: Extension): CommentSubjectRefResult => {
             const handsomeMovie = subject as HandsomeMovie;
             return {
-              label: "追剧",
+              label: "海报墙",
               title: `${handsomeMovie.spec.vod_name}  ${handsomeMovie.spec.status}`,
               externalUrl: `/movies/${handsomeMovie.metadata.name}`,
               route: {
