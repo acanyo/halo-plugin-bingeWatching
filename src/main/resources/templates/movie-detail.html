@@ -15,10 +15,33 @@
             <div class="flex-shrink-0 flex flex-col items-center w-full lg:w-[480px]">
                 <div class="relative w-[420px] h-[600px] rounded-3xl shadow-2xl bg-black overflow-hidden flex items-center justify-center border-2 border-gray-700">
                     <img th:src="${movie.spec.vod_pic}" th:alt="${movie.spec.vod_name}" loading="lazy"
-                         class="w-full h-full object-cover bg-gray-900 rounded-3xl">
+                         class="handsome-bingeWatching-poster-img w-full h-full object-cover bg-gray-900 rounded-3xl cursor-pointer">
                 </div>
                 <a th:href="${movie.spec.vod_pic}" target="_blank"
                    class="mt-8 px-8 py-3 rounded-xl border border-gray-500 text-gray-300 hover:bg-gray-800 transition text-lg">下载原图</a>
+                <!-- 评论弹窗（只保留评论区） -->
+                <div id="likcc-bingeWatching-comment-modal" class="likcc-bingeWatching-modal fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden">
+                    <div class="likcc-bingeWatching-modal-content bg-[#18181c] rounded-2xl shadow-xl p-8 max-w-lg w-full relative">
+                        <button id="likcc-bingeWatching-modal-close" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+                        <halo:comment
+                            group="bingewatching.lik.cc"
+                            kind="HandsomeMovie"
+                            th:attr="name=${movie.metadata.name}" />
+                    </div>
+                </div>
+                <script>
+                document.querySelector('.handsome-bingeWatching-poster-img')?.addEventListener('click', function() {
+                    document.getElementById('likcc-bingeWatching-comment-modal').classList.remove('hidden');
+                });
+                document.getElementById('likcc-bingeWatching-modal-close')?.addEventListener('click', function() {
+                    document.getElementById('likcc-bingeWatching-comment-modal').classList.add('hidden');
+                });
+                document.getElementById('likcc-bingeWatching-comment-modal')?.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.add('hidden');
+                    }
+                });
+                </script>
             </div>
             <!-- 右侧主信息区 -->
             <div class="flex-1 flex flex-col gap-8 justify-center items-start w-full">
