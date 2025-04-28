@@ -74,3 +74,4 @@ application-local.properties
 /ui copy/
 /workplace/
 /src/main/resources/console/
+/ui/pnpm-lock.yaml
