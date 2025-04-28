@@ -1,7 +1,9 @@
-import {definePlugin} from "@halo-dev/console-shared";
+import {definePlugin, type CommentSubjectRefResult, type CommentSubjectRefProvider } from "@halo-dev/console-shared";
 import BingeWatchingView from "./views/BingeWatching.vue";
 import {markRaw} from "vue";
 import MovieIcon from '~icons/icon-park-outline/movie';
+import type { Extension } from "@halo-dev/api-client";
+import {HandsomeMovie} from "@/api/generated";
 
 export default definePlugin({
   components: {},
@@ -37,6 +39,26 @@ export default definePlugin({
       },
     },
   ],
-  extensionPoints: {},
+  extensionPoints: {
+    "comment:subject-ref:create": (): CommentSubjectRefProvider[] => {
+      return [
+        {
+          kind: "HandsomeMovie",
+          group: "bingewatching.lik.cc",
+          resolve: (subject: Extension): CommentSubjectRefResult => {
+            const handsomeMovie = subject as HandsomeMovie;
+            return {
+              label: "追剧",
+              title: `${handsomeMovie.spec.vod_name}  ${handsomeMovie.spec.status}`,
+              externalUrl: `/movies/${handsomeMovie.metadata.name}`,
+              route: {
+                name: "HandsomeMovie",
+              },
+            };
+          },
+        },
+      ];
+    },
+  },
 });
 
