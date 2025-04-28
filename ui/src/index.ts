@@ -3,7 +3,7 @@ import BingeWatchingView from "./views/BingeWatching.vue";
 import {markRaw} from "vue";
 import MovieIcon from '~icons/icon-park-outline/movie';
 import type { Extension } from "@halo-dev/api-client";
-import {HandsomeMovie} from "@/api/generated";
+import {type HandsomeMovie} from "@/api/generated";
 
 export default definePlugin({
   components: {},
@@ -52,7 +52,7 @@ export default definePlugin({
               title: `${handsomeMovie.spec.vod_name}  ${handsomeMovie.spec.status}`,
               externalUrl: `/movies/${handsomeMovie.metadata.name}`,
               route: {
-                name: "HandsomeMovie",
+                name: "BingeWatching",
               },
             };
           },
