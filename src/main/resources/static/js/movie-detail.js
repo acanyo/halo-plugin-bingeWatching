@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // 图片骨架屏
     handsomeBingeWatchingInitImgSkeleton();
+    likccBingeWatchingInitQuotesCarousel();
 });
 
 // 返回上一页
@@ -27,4 +28,49 @@ function handsomeBingeWatchingInitImgSkeleton() {
             this.src = '/plugins/bingeWatching/assets/static/img/default-poster.png';
         });
     });
+}
+
+// 经典台词轮播
+function likccBingeWatchingInitQuotesCarousel() {
+    const lines = window.likccClassicLines || [];
+    if (!lines.length) return;
+    let idx = 0;
+    const quoteBox = document.getElementById('likcc-bingeWatching-quotes-list');
+    const prevBtn = document.getElementById('likcc-bingeWatching-quotes-prev');
+    const nextBtn = document.getElementById('likcc-bingeWatching-quotes-next');
+    let timer = null;
+
+    function showQuote(i) {
+        idx = (i + lines.length) % lines.length;
+        quoteBox.style.opacity = 0;
+        quoteBox.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            quoteBox.innerText = lines[idx];
+            quoteBox.style.opacity = 1;
+            quoteBox.style.transform = 'translateY(0)';
+        }, 200);
+    }
+
+    function next() { showQuote(idx + 1); }
+    function prev() { showQuote(idx - 1); }
+    function auto() { timer = setInterval(next, 4000); }
+    function stop() { clearInterval(timer); }
+
+    if (prevBtn) prevBtn.onclick = prev;
+    if (nextBtn) nextBtn.onclick = next;
+    if (quoteBox) {
+        quoteBox.onmouseenter = stop;
+        quoteBox.onmouseleave = auto;
+    }
+    if (prevBtn) {
+        prevBtn.onmouseenter = stop;
+        prevBtn.onmouseleave = auto;
+    }
+    if (nextBtn) {
+        nextBtn.onmouseenter = stop;
+        nextBtn.onmouseleave = auto;
+    }
+
+    showQuote(0);
+    auto();
 } 

@@ -47,13 +47,28 @@
                     <div th:if="${movie.spec.vod_content != null and movie.spec.vod_content != ''}" class="text-lg text-gray-300 leading-relaxed" th:text="${movie.spec.vod_content}"></div>
                     <div th:if="${movie.spec.vod_content == null or movie.spec.vod_content == ''}" class="text-gray-500">暂无简介</div>
                 </div>
-                <!-- 经典台词分区（简洁文本风格） -->
+                <!-- 经典台词分区（美化轮播引用风格+切换按钮） -->
                 <div class="w-full bg-[#18181c] bg-opacity-90 rounded-2xl shadow p-8">
                     <div class="text-xl text-gray-200 font-semibold mb-2">经典台词</div>
-                    <ul class="space-y-2">
-                        <li th:each="line : ${movie.spec.classicLines}" class="text-lg text-gray-300 leading-relaxed" th:text="${line}"></li>
-                        <li th:if="${movie.spec.classicLines == null or #lists.isEmpty(movie.spec.classicLines)}" class="text-gray-500">暂无经典台词</li>
-                    </ul>
+                    <div id="likcc-bingeWatching-quotes-carousel" class="relative" th:if="${movie.spec.classicLines != null and !#lists.isEmpty(movie.spec.classicLines)}">
+                        <button id="likcc-bingeWatching-quotes-prev" type="button"
+                            class="likcc-quotes-btn absolute -left-8 top-1/2 -translate-y-1/2 z-10"
+                            aria-label="上一条台词">
+                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M14 18l-6-7 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                        <div id="likcc-bingeWatching-quotes-list" class="likcc-quotes-quote-box mx-auto" style="max-width:90%;"></div>
+                        <button id="likcc-bingeWatching-quotes-next" type="button"
+                            class="likcc-quotes-btn absolute -right-8 top-1/2 -translate-y-1/2 z-10"
+                            aria-label="下一条台词">
+                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M8 4l6 7-6 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+                    </div>
+                    <div th:if="${movie.spec.classicLines == null or #lists.isEmpty(movie.spec.classicLines)}" class="text-gray-500">暂无经典台词</div>
+                    <script th:inline="javascript">
+                        /*<![CDATA[*/
+                        window.likccClassicLines = /*[[${movie.spec.classicLines}]]*/ [];
+                        /*]]>*/
+                    </script>
                 </div>
             </div>
         </div>
