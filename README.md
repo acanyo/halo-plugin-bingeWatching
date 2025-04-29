@@ -55,6 +55,8 @@
 1. 在 [GitHub - acanyo/halo-plugin-bingeWatching](https://github.com/acanyo/halo-plugin-bingeWatching) 页面下载最新版本的插件包（JAR 文件）或者在 Halo 应用搜索 `影视墙` 安装
 2. 在 Halo 后台的插件管理页面上传并安装
 3. 安装完成后，在左侧菜单栏会出现"追剧管理"选项
+## 💬交流
+![群.png](https://www.lik.cc/upload/iShot_2025-03-03_16.03.00.png)
 
 ## 贡献
 
