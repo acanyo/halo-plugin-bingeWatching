@@ -5,12 +5,12 @@
 /* 自定义组件样式 */
 @layer components {
   .movie-card {
-    @apply relative overflow-hidden rounded-xl shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl bg-gray-100;
+    @apply relative overflow-hidden rounded-xl shadow-lg bg-gray-100;
     aspect-ratio: 2/3;
   }
   
   .movie-info {
-    @apply absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 text-white opacity-0 transition-opacity duration-300;
+    @apply absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-4 text-white;
   }
 
   .movie-card:hover .movie-info {
@@ -326,28 +326,34 @@
     }
   }
 
-  /* 海报区域样式 */
-  .tooltip-bubble {
-    @apply pointer-events-none;
-    @apply filter drop-shadow-lg;
-    animation: tooltipFloat 3s ease-in-out infinite;
+  /* 评论按钮样式 */
+  .comment-button {
+    @apply inline-flex items-center gap-2 px-4 py-2;
+    @apply bg-black/75 backdrop-blur-md rounded-lg;
+    @apply text-white/90 text-sm;
+    @apply transition-all duration-200;
   }
 
-  @keyframes tooltipFloat {
-    0%, 100% {
-      transform: translate(100%, 0);
-    }
-    50% {
-      transform: translate(100%, -6px);
+  .comment-button:hover {
+    @apply bg-black/85;
+  }
+
+  .comment-button svg {
+    @apply w-4 h-4;
+  }
+
+  /* 移动端适配 */
+  @media (max-width: 640px) {
+    .comment-button {
+      @apply text-xs px-3 py-1.5;
     }
   }
 
-  /* 海报悬停效果 */
   .handsome-bingeWatching-poster-img {
-    @apply transform transition-all duration-300;
+    @apply transition-all duration-300;
   }
 
   .handsome-bingeWatching-poster-img:hover {
-    @apply brightness-110;
+    @apply brightness-105;
   }
 } 
