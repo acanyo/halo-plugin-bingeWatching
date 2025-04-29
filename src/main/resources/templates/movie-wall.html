@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${styleConfig.title}">影视海报墙</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/plugins/bingeWatching/assets/static/css/tailwind.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"/>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+<div layout:fragment="content">
     <!-- 顶部导航栏 -->
     <div th:if="${styleConfig.enableNavigationBar}" class="w-full bg-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,22 +115,29 @@
         <div th:if="${not #lists.isEmpty(movies)}" class="pagination">
             <a th:if="${currentPage > 1}" 
                th:href="@{/movies(page=${currentPage - 1},keyword=${param.keyword})}"
-               class="flex items-center text-white"
-               th:style="'background:' + ${styleConfig.themeColor}">
-                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               th:class="${currentPage <= 1 ? 'disabled' : ''}"
+               class="group">
+                <svg class="group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
-                上一页
+                <span>上一页</span>
             </a>
-            <span class="flex items-center">
-                第 [[${currentPage}]] / [[${totalPages}]] 页
+            
+            <span class="info" th:if="${totalPages > 0}">
+                第 <span class="font-bold" th:text="${currentPage}"></span> / 
+                <span class="font-bold" th:text="${totalPages}"></span> 页
             </span>
+            
+            <span class="current" th:if="${totalPages == 0}">
+                暂无数据
+            </span>
+            
             <a th:if="${currentPage < totalPages}" 
                th:href="@{/movies(page=${currentPage + 1},keyword=${param.keyword})}"
-               class="flex items-center text-white"
-               th:style="'background:' + ${styleConfig.themeColor}">
-                下一页
-                <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+               th:class="${currentPage >= totalPages ? 'disabled' : ''}"
+               class="group">
+                <span>下一页</span>
+                <svg class="group-hover:animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
@@ -167,5 +177,6 @@
         }
     });
     </script>
+</div>
 </body>
 </html> 

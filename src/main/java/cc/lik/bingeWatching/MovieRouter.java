@@ -28,7 +28,7 @@ public class MovieRouter {
     private final TemplateNameResolver templateNameResolver;
     private final HandsomeMovieFinder movieFinder;
     private final SettingConfigGetter settingConfigGetter;
-    private static final int DEFAULT_PAGE_SIZE = 21;
+    private static final int DEFAULT_PAGE_SIZE = 20;
 
     @Bean
     RouterFunction<ServerResponse> movieRouterFunction() {

@@ -17,46 +17,65 @@ class MovieWall {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const img = entry.target;
-                        this.loadImage(img, observer);
+                        this.loadImage(img);
+                        observer.unobserve(img);
                     }
                 });
             }, {
-                rootMargin: '50px'
+                rootMargin: '50px 0px', // 提前50px开始加载
+                threshold: 0.01 // 只要出现一点就开始加载
             });
 
-            lazyImages.forEach(img => imageObserver.observe(img));
+            lazyImages.forEach(img => {
+                imageObserver.observe(img);
+                // 添加占位图
+                img.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"%3E%3C/svg%3E';
+            });
+        } else {
+            // 降级处理：直接加载所有图片
+            lazyImages.forEach(img => this.loadImage(img));
         }
     }
 
-    loadImage(img, observer) {
+    loadImage(img) {
         const card = img.closest('.movie-card');
-        const tempImage = new Image();
+        if (!card) return;
 
-        tempImage.onload = () => {
+        const loadingEl = card.querySelector('.loading-skeleton');
+        if (loadingEl) loadingEl.style.display = 'flex';
+
+        const actualImage = new Image();
+        
+        actualImage.onload = () => {
             img.src = img.dataset.src;
             img.classList.remove('lazy');
-            card.classList.remove('loading');
-            observer.unobserve(img);
+            img.classList.add('loaded');
+            if (loadingEl) {
+                loadingEl.style.opacity = '0';
+                setTimeout(() => loadingEl.style.display = 'none', 300);
+            }
         };
 
-        tempImage.onerror = () => {
+        actualImage.onerror = () => {
             img.src = this.getErrorPlaceholder();
-            card.classList.remove('loading');
-            observer.unobserve(img);
+            img.classList.remove('lazy');
+            img.classList.add('error');
+            if (loadingEl) loadingEl.style.display = 'none';
         };
 
-        tempImage.src = img.dataset.src;
+        actualImage.src = img.dataset.src;
     }
 
     initEventListeners() {
-        // 电影卡片点击
         document.querySelectorAll('.movie-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const name = card.dataset.name;
-                if (name) {
+            // 移除点击事件，改为链接形式
+            const name = card.dataset.name;
+            if (name) {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', () => {
                     window.location.href = `/movies/${name}`;
-                }
-            });
+                });
+            }
         });
     }
 

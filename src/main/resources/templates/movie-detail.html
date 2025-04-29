@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${title}">影视详情</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/plugins/bingeWatching/assets/static/css/tailwind.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"/>
     <link rel="stylesheet" href="/plugins/bingeWatching/assets/static/css/comment-widget.css"/>
@@ -20,29 +20,58 @@
                 </div>
                 <a th:href="${movie.spec.vod_pic}" target="_blank"
                    class="mt-8 px-8 py-3 rounded-xl border border-gray-500 text-gray-300 hover:bg-gray-800 transition text-lg">下载原图</a>
-                <!-- 评论弹窗（只保留评论区） -->
-                <div id="likcc-bingeWatching-comment-modal" class="likcc-bingeWatching-modal fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden">
-                    <div class="likcc-bingeWatching-modal-content bg-[#18181c] rounded-2xl shadow-xl p-8 max-w-lg w-full relative">
+                <!-- 评论弹窗 -->
+                <div id="likcc-bingeWatching-comment-modal" class="handsome-bingeWatching-modal fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden opacity-0 transition-opacity duration-300">
+                    <div class="handsome-bingeWatching-modal-content bg-[#18181c] rounded-2xl shadow-xl p-8 max-w-lg w-full relative transform transition-transform duration-300 scale-95">
                         <button id="likcc-bingeWatching-modal-close" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
                         <halo:comment
                             group="bingewatching.lik.cc"
                             kind="HandsomeMovie"
                             th:attr="name=${movie.metadata.name}"
-                            mpMode=“false”
+                            mpMode="false"
                              />
                     </div>
                 </div>
                 <script>
-                document.querySelector('.handsome-bingeWatching-poster-img')?.addEventListener('click', function() {
-                    document.getElementById('likcc-bingeWatching-comment-modal').classList.remove('hidden');
-                });
-                document.getElementById('likcc-bingeWatching-modal-close')?.addEventListener('click', function() {
-                    document.getElementById('likcc-bingeWatching-comment-modal').classList.add('hidden');
-                });
-                document.getElementById('likcc-bingeWatching-comment-modal')?.addEventListener('click', function(e) {
-                    if (e.target === this) {
-                        this.classList.add('hidden');
+                document.addEventListener('DOMContentLoaded', function() {
+                    const modal = document.getElementById('likcc-bingeWatching-comment-modal');
+                    const modalContent = modal.querySelector('.handsome-bingeWatching-modal-content');
+                    const closeBtn = document.getElementById('likcc-bingeWatching-modal-close');
+                    const posterImg = document.querySelector('.handsome-bingeWatching-poster-img');
+
+                    function showModal() {
+                        modal.classList.remove('hidden');
+                        // 触发重排后添加过渡效果
+                        setTimeout(() => {
+                            modal.classList.remove('opacity-0');
+                            modalContent.classList.remove('scale-95');
+                        }, 10);
                     }
+
+                    function hideModal() {
+                        modal.classList.add('opacity-0');
+                        modalContent.classList.add('scale-95');
+                        setTimeout(() => {
+                            modal.classList.add('hidden');
+                        }, 300);
+                    }
+
+                    posterImg?.addEventListener('click', showModal);
+                    
+                    closeBtn?.addEventListener('click', hideModal);
+                    
+                    modal?.addEventListener('click', function(e) {
+                        if (e.target === modal) {
+                            hideModal();
+                        }
+                    });
+
+                    // 添加 ESC 键关闭
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                            hideModal();
+                        }
+                    });
                 });
                 </script>
             </div>

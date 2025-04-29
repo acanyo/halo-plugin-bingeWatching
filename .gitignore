@@ -75,3 +75,4 @@ application-local.properties
 /workplace/
 /src/main/resources/console/
 /ui/pnpm-lock.yaml
+/tailwindCSS/node_modules/
