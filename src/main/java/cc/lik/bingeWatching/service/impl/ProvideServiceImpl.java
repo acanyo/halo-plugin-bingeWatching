@@ -7,8 +7,11 @@ import cc.lik.bingeWatching.entity.HandsomeMovie;
 import cc.lik.bingeWatching.service.FileAttachmentService;
 import cc.lik.bingeWatching.service.ProvideService;
 import cc.lik.bingeWatching.service.SettingConfigGetter;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.List;
@@ -37,9 +40,14 @@ import run.halo.app.extension.router.selector.FieldSelector;
 public class ProvideServiceImpl implements ProvideService {
     private final ReactiveExtensionClient client;
     private final WebClient.Builder webClientBuilder;
-    private final ObjectMapper objectMapper;
     private final SettingConfigGetter settingConfigGetter;
     private final FileAttachmentService fileAttachmentSvc;
+    
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .build();
+
     private static final List<String> REQUIRED_FIELDS = List.of(
         "vod_name", "vod_en", "vod_pic", "vod_actor", "vod_lang", "vod_year", "vod_score", "vod_content", "type_name"
     );

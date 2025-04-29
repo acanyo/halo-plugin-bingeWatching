@@ -12,8 +12,11 @@ import cc.lik.bingeWatching.job.CronUpdateDataJob;
 import cc.lik.bingeWatching.service.FileAttachmentService;
 import cc.lik.bingeWatching.service.ProvideService;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +39,13 @@ import run.halo.app.extension.ListResult;
 public class MovieEndpoint implements CustomEndpoint {
     private final ProvideService provideSvc;
     private final FileAttachmentService fileAttachmentService;
-    private final ObjectMapper objectMapper;
     private final CronUpdateDataJob cronUpdateDataJob;
     
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .build();
+
     @Override
     public RouterFunction<ServerResponse> endpoint() {
         final var tag = "api.bingewatching.lik.cc/v1alpha1/bingewatching";
