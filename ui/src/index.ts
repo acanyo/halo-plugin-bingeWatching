@@ -49,7 +49,7 @@ export default definePlugin({
             const handsomeMovie = subject as HandsomeMovie;
             return {
               label: "海报墙",
-              title: `${handsomeMovie.spec.vod_name}  ${handsomeMovie.spec.status}`,
+              title: `${handsomeMovie.spec.vodName}  ${handsomeMovie.spec.status}`,
               externalUrl: `/movies/${handsomeMovie.metadata.name}`,
               route: {
                 name: "BingeWatching",

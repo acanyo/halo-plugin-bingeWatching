@@ -5,19 +5,19 @@ import {FormKit} from "@formkit/vue";
 import {handsomeMovieApi} from "@/api";
 
 interface MovieInfo {
-  vod_name: string;
-  vod_pic: string;
-  vod_actor: string;
-  vod_lang: string;
-  vod_year: string;
-  vod_score: string;
-  vod_content: string;
-  type_name: string;
+  vodName: string;
+  vodPic: string;
+  vodActor: string;
+  vodLang: string;
+  vodYear: string;
+  vodScore: string;
+  vodContent: string;
+  typeName: string;
   id: string;
 }
 
 interface FormState {
-  vod_name: string;
+  vodName: string;
   updateCycle: string;
   seen: string;
   selectedMovie: MovieInfo | null;
@@ -38,7 +38,7 @@ const emit = defineEmits<{
 }>();
 
 const initialFormState: FormState = {
-  vod_name: "",
+  vodName: "",
   updateCycle: "",
   seen: "",
   selectedMovie: null
@@ -96,7 +96,7 @@ watch(
 );
 
 const isFormValid = computed(() => {
-  if (!formState.value.vod_name?.trim()) return false;
+  if (!formState.value.vodName?.trim()) return false;
   return true;
 });
 
@@ -125,16 +125,16 @@ const handleConfirmSelection = async () => {
         generateName: "handsomemovie-",
       },
       spec: {
-        vod_name: movie.vod_name,
+        vodName: movie.vodName,
         updateCycle: formState.value.updateCycle,
         seen: formState.value.seen,
-        vod_pic: movie.vod_pic || "",
-        vod_actor: movie.vod_actor || "",
-        vod_lang: movie.vod_lang || "",
-        vod_year: movie.vod_year || "",
-        vod_score: movie.vod_score || "",
-        vod_content: movie.vod_content || "",
-        type_name: movie.type_name || "",
+        vodPic: movie.vodPic || "",
+        vodActor: movie.vodActor || "",
+        vodLang: movie.vodLang || "",
+        vodYear: movie.vodYear || "",
+        vodScore: movie.vodScore || "",
+        vodContent: movie.vodContent || "",
+        typeName: movie.typeName || "",
         status: "观看中"
       },
       kind: "HandsomeMovie",
@@ -155,7 +155,7 @@ const handleConfirmSelection = async () => {
 
 const handleSyncMovie = async () => {
   if (!isFormValid.value) {
-    if (!formState.value.vod_name?.trim()) {
+    if (!formState.value.vodName?.trim()) {
       Toast.error("影视名称不能为空");
       return;
     }
@@ -167,7 +167,7 @@ const handleSyncMovie = async () => {
     saving.value = true;
     // 先获取影视信息
     const response = await fetch(
-      `/apis/api.bingewatching.lik.cc/v1alpha1/movies/-/${encodeURIComponent(formState.value.vod_name)}`
+      `/apis/api.bingewatching.lik.cc/v1alpha1/movies/-/${encodeURIComponent(formState.value.vodName)}`
     );
     const result = await response.json();
     
@@ -190,16 +190,16 @@ const handleSyncMovie = async () => {
           generateName: "handsomemovie-",
         },
         spec: {
-          vod_name: result.data[0].vod_name,
+          vodName: result.data[0].vodName,
           updateCycle: formState.value.updateCycle,
           seen: formState.value.seen,
-          vod_pic: result.data[0].vod_pic || "",
-          vod_actor: result.data[0].vod_actor || "",
-          vod_lang: result.data[0].vod_lang || "",
-          vod_year: result.data[0].vod_year || "",
-          vod_score: result.data[0].vod_score || "",
-          vod_content: result.data[0].vod_content || "",
-          type_name: result.data[0].type_name || "",
+          vodPic: result.data[0].vodPic || "",
+          vodActor: result.data[0].vodActor || "",
+          vodLang: result.data[0].vodLang || "",
+          vodYear: result.data[0].vodYear || "",
+          vodScore: result.data[0].vodScore || "",
+          vodContent: result.data[0].vodContent || "",
+          typeName: result.data[0].typeName || "",
           status: "观看中"
         },
         kind: "HandsomeMovie",
@@ -246,9 +246,9 @@ const handleSyncMovie = async () => {
         <div class="likcc-form-content">
           <!-- 影视名称输入框 -->
           <FormKit
-            v-model="formState.vod_name"
+            v-model="formState.vodName"
             type="text"
-            name="vod_name"
+            name="vodName"
             validation="required"
             :validation-messages="validationMessages"
             label="影视名称"
@@ -317,12 +317,12 @@ const handleSyncMovie = async () => {
       >
         <div class="likcc-movie-poster">
           <img
-            :src="movie.vod_pic"
-            :alt="movie.vod_name"
+            :src="movie.vodPic"
+            :alt="movie.vodName"
             loading="lazy"
           >
         </div>
-        <div class="likcc-movie-title">{{ movie.vod_name }}</div>
+        <div class="likcc-movie-title">{{ movie.vodName }}</div>
       </div>
     </div>
 

@@ -47,9 +47,9 @@ public class MovieQuery extends SortableRequest {
         Optional.ofNullable(getKeyword())
             .filter(StringUtils::isNotBlank)
             .ifPresent(keyword -> builder.andQuery(or(
-                contains("spec.vod_name", keyword),
-                contains("spec.vod_content", keyword),
-                contains("spec.vod_en", keyword),
+                contains("spec.vodName", keyword),
+                contains("spec.vodContent", keyword),
+                contains("spec.vodEn", keyword),
                 contains("metadata.name", keyword)
             )));
 

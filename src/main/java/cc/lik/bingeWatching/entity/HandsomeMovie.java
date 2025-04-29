@@ -21,23 +21,23 @@ public class HandsomeMovie extends AbstractExtension {
     @Data
     public static class HandsomeMovieSpec {
         @Schema(description = "影视名称", requiredMode = REQUIRED)
-        private String vod_name;
+        private String vodName;
         @Schema(description = "英文名称")
-        private String vod_en;
+        private String vodEn;
         @Schema(description = "影视图片", requiredMode = REQUIRED)
-        private String vod_pic;
+        private String vodPic;
         @Schema(description = "影视演员")
-        private String vod_actor;
+        private String vodActor;
         @Schema(description = "地区语言")
-        private String vod_lang;
+        private String vodLang;
         @Schema(description = "影视年份")
-        private String vod_year;
+        private String vodYear;
         @Schema(description = "影视评分")
-        private String vod_score;
+        private String vodScore;
         @Schema(description = "影视描述")
-        private String vod_content;
+        private String vodContent;
         @Schema(description = "影视类型")
-        private String type_name;
+        private String typeName;
         @Schema(description = "已看集数")
         private String seen;
         @Schema(description = "更新集数")
@@ -48,6 +48,5 @@ public class HandsomeMovie extends AbstractExtension {
         private String status;
         @Schema(description = "经典台词")
         private List<String> classicLines;
-
     }
 }

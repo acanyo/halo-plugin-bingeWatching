@@ -90,16 +90,16 @@ public class MovieEndpoint implements CustomEndpoint {
                                     .implementation(HandsomeMovie[].class)
                                     .description("""
                                         影视记录数组，每条记录包含：
-                                        - vod_name: 影视名称
+                                        - vodName: 影视名称
                                         - updateCycle: 更新周期
                                         - seen: 已看集数
-                                        - vod_pic: 影视图片
-                                        - vod_actor: 演员
-                                        - vod_lang: 语言
-                                        - vod_year: 年份
-                                        - vod_score: 评分
-                                        - vod_content: 简介
-                                        - type_name: 类型
+                                        - vodPic: 影视图片
+                                        - vodActor: 演员
+                                        - vodLang: 语言
+                                        - vodYear: 年份
+                                        - vodScore: 评分
+                                        - vodContent: 简介
+                                        - typeName: 类型
                                         """)
                                 )
                         )

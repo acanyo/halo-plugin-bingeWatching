@@ -33,15 +33,15 @@ const initialFormState: HandsomeMovie = {
     generateName: "handsomemovie-",
   },
   spec: {
-    vod_name: "",
-    vod_en: "",
-    vod_pic: "",
-    vod_actor: "",
-    vod_lang: "",
-    vod_year: "",
-    vod_score: "",
-    vod_content: "",
-    type_name: "",
+    vodName: "",
+    vodEn: "",
+    vodPic: "",
+    vodActor: "",
+    vodLang: "",
+    vodYear: "",
+    vodScore: "",
+    vodContent: "",
+    typeName: "",
     seen: "",
     updateCycle: "",
     status: ""
@@ -109,19 +109,19 @@ watch(
 );
 
 const isFormValid = computed(() => {
-  if (!formState.value.spec.vod_name?.trim()) return false;
-  if (!formState.value.spec.vod_pic?.trim()) return false;
+  if (!formState.value.spec.vodName?.trim()) return false;
+  if (!formState.value.spec.vodPic?.trim()) return false;
   return true;
 });
 
 const handleSaveMovie = async () => {
   try {
     if (!isFormValid.value) {
-      if (!formState.value.spec.vod_name?.trim()) {
+      if (!formState.value.spec.vodName?.trim()) {
         Toast.error("影视名称不能为空");
         return;
       }
-      if (!formState.value.spec.vod_pic?.trim()) {
+      if (!formState.value.spec.vodPic?.trim()) {
         Toast.error("影视图片不能为空");
         return;
       }
@@ -183,62 +183,62 @@ const handleSaveMovie = async () => {
         </div>
         <div class="mt-5 divide-y divide-gray-100 md:col-span-3 md:mt-0">
           <FormKit
-            v-model="formState.spec.vod_name"
+            v-model="formState.spec.vodName"
             type="text"
-            name="vod_name"
+            name="vodName"
             validation="required"
             :validation-messages="validationMessages"
             label="影视名称"
           ></FormKit>
           <FormKit
-            v-model="formState.spec.vod_en"
+            v-model="formState.spec.vodEn"
             type="text"
-            name="vod_en"
+            name="vodEn"
             label="英文名称"
           ></FormKit>
           <FormKit
             type="attachment"
-            v-model="formState.spec.vod_pic"
-            name="vod_pic"
+            v-model="formState.spec.vodPic"
+            name="vodPic"
             label="影视图片"
             validation="required"
             :validation-messages="validationMessages"
           ></FormKit>
           <FormKit
-            v-model="formState.spec.vod_actor"
+            v-model="formState.spec.vodActor"
             type="text"
-            name="vod_actor"
+            name="vodActor"
             label="影视演员"
           ></FormKit>
           <FormKit
-            v-model="formState.spec.vod_lang"
+            v-model="formState.spec.vodLang"
             type="text"
-            name="vod_lang"
+            name="vodLang"
             label="地区语言"
           ></FormKit>
           <FormKit
-            v-model="formState.spec.vod_year"
+            v-model="formState.spec.vodYear"
             type="text"
-            name="vod_year"
+            name="vodYear"
             label="影视年份"
           ></FormKit>
           <FormKit
-            v-model="formState.spec.vod_score"
+            v-model="formState.spec.vodScore"
             type="text"
-            name="vod_score"
+            name="vodScore"
             label="影视评分"
           ></FormKit>
           <FormKit
-            v-model="formState.spec.vod_content"
+            v-model="formState.spec.vodContent"
             type="textarea"
-            name="vod_content"
+            name="vodContent"
             label="影视描述"
             :rows="3"
           ></FormKit>
           <FormKit
-            v-model="formState.spec.type_name"
+            v-model="formState.spec.typeName"
             type="text"
-            name="type_name"
+            name="typeName"
             label="影视类型"
           ></FormKit>
           <FormKit

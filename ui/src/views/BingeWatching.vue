@@ -397,28 +397,28 @@ onMounted(() => {
                     type="checkbox"
                   />
                 </td>
-                <td class="px-4 py-4">{{ movie.spec.vod_name }}</td>
+                <td class="px-4 py-4">{{ movie.spec.vodName }}</td>
                 <td class="px-4 py-4 poster">
                   <img
-                    v-if="movie.spec.vod_pic"
-                    :src="movie.spec.vod_pic"
-                    :alt="movie.spec.vod_name"
+                    v-if="movie.spec.vodPic"
+                    :src="movie.spec.vodPic"
+                    :alt="movie.spec.vodName"
                     referrerpolicy="no-referrer"
                   />
                   <span v-else>-</span>
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ movie.spec.type_name || '暂无类型' }}
+                  {{ movie.spec.typeName || '暂无类型' }}
                 </td>
                 <td class="px-4 py-4 table-td">
                   {{
-                    movie.spec.vod_actor && movie.spec.vod_actor.length > 10
-                      ? movie.spec.vod_actor.slice(0, 10) + '...'
-                      : movie.spec.vod_actor || '暂无演员'
+                    movie.spec.vodActor && movie.spec.vodActor.length > 10
+                      ? movie.spec.vodActor.slice(0, 10) + '...'
+                      : movie.spec.vodActor || '暂无演员'
                   }}
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ movie.spec.vod_score || '暂无评分' }}
+                  {{ movie.spec.vodScore || '暂无评分' }}
                 </td>
                 <td class="px-4 py-4 table-td">
                   {{ movie.spec.seen }}

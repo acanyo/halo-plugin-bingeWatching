@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import run.halo.app.extension.ListResult;
 
 public interface ProvideService {
-    Mono<JsonNode> getProvideMovieList(String vod_name);
+    Mono<JsonNode> getProvideMovieList(String vodName);
     Mono<ListResult<HandsomeMovie>> listMovie(MovieQuery query);
     Mono<Void> insertMovie(List<HandsomeMovie> movies);
 }

@@ -73,7 +73,7 @@ public class MovieRouter {
             Map<String, Object> model = new HashMap<>();
             model.put("movie", movie);
             model.put("styleConfig", styleConfig);
-            model.put("title", styleConfig.getTitle() + "|" + movie.getSpec().getVod_name());
+            model.put("title", styleConfig.getTitle() + "|" + movie.getSpec().getVodName());
             return templateNameResolver.resolveTemplateNameOrDefault(request.exchange(), "movie-detail")
                 .flatMap(templateName -> ServerResponse.ok()
                     .render(templateName, model));

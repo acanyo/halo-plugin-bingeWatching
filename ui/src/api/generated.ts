@@ -10,19 +10,19 @@ export interface HandsomeMovie {
     annotations?: Record<string, string>;
   };
   spec: {
-    vod_name: string;
-    vod_en?: string;
-    vod_pic: string;
-    vod_actor?: string;
-    vod_lang?: string;
-    vod_year?: string;
-    vod_score?: string;
-    vod_content?: string;
-    type_name?: string;
-    seen: string;
-    newSeen?: string;
-    updateCycle: string;
+    vodName: string;
+    vodEn?: string;
+    vodPic: string;
+    vodActor?: string;
+    vodLang?: string;
+    vodYear?: string;
+    vodScore?: string;
+    vodContent?: string;
+    typeName?: string;
+    seen?: string;
+    updateCycle?: string;
     status?: string;
+    newSeen?: string;
     classicLines?: string[];
   };
 }
@@ -46,9 +46,9 @@ export interface HandsomeMovieV1alpha1UcApi {
   listHandsomeMovies(params: {
     page?: number;
     size?: number;
+    sort?: string;
+    type?: string;
     keyword?: string;
-    sort?: string[];
-    status?: string;
   }): Promise<{ data: ListResult<HandsomeMovie> }>;
   
   createHandsomeMovie(params: { handsomeMovie: HandsomeMovie }): Promise<{ data: HandsomeMovie }>;

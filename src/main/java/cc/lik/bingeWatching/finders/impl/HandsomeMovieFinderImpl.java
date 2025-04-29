@@ -51,8 +51,8 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
 
 
     @Override
-    public Mono<HandsomeMovieVo> getByName(String vod_name) {
-        return client.fetch(HandsomeMovie.class, vod_name)
+    public Mono<HandsomeMovieVo> getByName(String vodName) {
+        return client.fetch(HandsomeMovie.class, vodName)
             .map(HandsomeMovieVo::from);
     }
     @Override
@@ -75,9 +75,9 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
     public Flux<HandsomeMovieVo> fuzzySearchByName(String keyword) {
         var listOptions = new ListOptions();
         var query = or(
-            contains("spec.vod_name", keyword),
-            contains("spec.vod_en", keyword),
-            contains("spec.vod_content", keyword)
+            contains("spec.vodName", keyword),
+            contains("spec.vodEn", keyword),
+            contains("spec.vodContent", keyword)
         );
         listOptions.setFieldSelector(FieldSelector.of(query));
         return client.listAll(HandsomeMovie.class, listOptions, defaultSort())
@@ -87,9 +87,9 @@ public class HandsomeMovieFinderImpl implements HandsomeMovieFinder {
     public  Mono<ListResult<HandsomeMovieVo>>  listFuzzySearchByName(Integer page, Integer size,String keyword) {
         var listOptions = new ListOptions();
         var query = or(
-            contains("spec.vod_name", keyword),
-            contains("spec.vod_en", keyword),
-            contains("spec.vod_content", keyword)
+            contains("spec.vodName", keyword),
+            contains("spec.vodEn", keyword),
+            contains("spec.vodContent", keyword)
         );
         listOptions.setFieldSelector(FieldSelector.of(query));
         var pageRequest = PageRequestImpl.of(pageNullSafe(page), sizeNullSafe(size), defaultSort());

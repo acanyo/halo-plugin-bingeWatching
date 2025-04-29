@@ -30,25 +30,25 @@ public class BingeWatchingPlugin extends BasePlugin {
     public void start() {
         schemeManager.register(HandsomeMovie.class, indexSpecs -> {
             indexSpecs.add(new IndexSpec()
-                .setName("spec.vod_name")
+                .setName("spec.vodName")
                 .setIndexFunc(
                     simpleAttribute(HandsomeMovie.class,
-                        movie -> movie.getSpec().getVod_name())));
+                        movie -> movie.getSpec().getVodName())));
             indexSpecs.add(new IndexSpec()
-                .setName("spec.vod_en")
+                .setName("spec.vodEn")
                 .setIndexFunc(
                     simpleAttribute(HandsomeMovie.class,
-                        movie -> movie.getSpec().getVod_en())));
+                        movie -> movie.getSpec().getVodEn())));
             indexSpecs.add(new IndexSpec()
                 .setName("spec.status")
                 .setIndexFunc(
                     simpleAttribute(HandsomeMovie.class,
                         movie -> movie.getSpec().getStatus())));
             indexSpecs.add(new IndexSpec()
-                .setName("spec.vod_content")
+                .setName("spec.vodContent")
                 .setIndexFunc(
                     simpleAttribute(HandsomeMovie.class,
-                        movie -> movie.getSpec().getVod_content())));
+                        movie -> movie.getSpec().getVodContent())));
         });
     }
 

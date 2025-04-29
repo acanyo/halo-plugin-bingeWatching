@@ -48,12 +48,13 @@ public class ProvideServiceImpl implements ProvideService {
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .build();
 
+
     private static final List<String> REQUIRED_FIELDS = List.of(
         "vod_name", "vod_en", "vod_pic", "vod_actor", "vod_lang", "vod_year", "vod_score", "vod_content", "type_name"
     );
 
     @Override
-    public Mono<JsonNode> getProvideMovieList(String vod_name) {
+    public Mono<JsonNode> getProvideMovieList(String vodName) {
         return settingConfigGetter.getBasicConfig()
             .map(config -> {
                 String vod_URL = Boolean.TRUE.equals(config.getIsProxy()) ? config.getProxyHost() : "https://www.heimuer.tv";
@@ -61,7 +62,7 @@ public class ProvideServiceImpl implements ProvideService {
                 String MOVIE_LIST_PATH = "/api.php/provide/vod/";
                 String uri = UriComponentsBuilder.fromPath(MOVIE_LIST_PATH)
                     .queryParam("ac", "videolist")
-                    .queryParam("wd", vod_name)
+                    .queryParam("wd", vodName)
                     .build()
                     .toUriString();
                 return webClient.get()
@@ -76,6 +77,7 @@ public class ProvideServiceImpl implements ProvideService {
                             JsonNode jsonResponse = objectMapper.readTree(responseBody);
                             JsonNode listNode = jsonResponse.path("list");
                             ArrayNode filteredList = objectMapper.createArrayNode();
+                            
                             if (listNode.isArray()) {
                                 for (JsonNode movieNode : listNode) {
                                     boolean hasAnyRequiredField = false;
@@ -92,13 +94,15 @@ public class ProvideServiceImpl implements ProvideService {
                                     ObjectNode filteredMovie = objectMapper.createObjectNode();
                                     REQUIRED_FIELDS.forEach(field -> {
                                         if (movieNode.has(field)) {
-                                            filteredMovie.set(field, movieNode.get(field));
+                                            String camelCaseField = snakeCaseToCamelCase(field);
+                                            filteredMovie.set(camelCaseField, movieNode.get(field));
                                         }
                                     });
                                     filteredMovie.put("id", UUID.randomUUID().toString());
                                     filteredList.add(filteredMovie);
                                 }
                             }
+                            
                             // 构建成功响应体
                             ObjectNode successResponse = objectMapper.createObjectNode();
                             successResponse.put("error", false);
@@ -115,7 +119,7 @@ public class ProvideServiceImpl implements ProvideService {
                             errorNode.set("data", objectMapper.createArrayNode());
                             return Mono.just(errorNode);
                         }
-                    }).onErrorResume(error -> { // 处理其他所有错误 (如网络错误)
+                    }).onErrorResume(error -> {
                         ObjectNode errorNode = objectMapper.createObjectNode();
                         errorNode.put("error", true);
                         String message = "获取电影列表失败: " + error.getMessage();
@@ -132,6 +136,16 @@ public class ProvideServiceImpl implements ProvideService {
             })
             .defaultIfEmpty(Mono.error(new RuntimeException("无法获取基本配置")))
             .flatMap(mono -> mono);
+    }
+
+    private String snakeCaseToCamelCase(String snakeCase) {
+        String[] parts = snakeCase.split("_");
+        StringBuilder camelCase = new StringBuilder(parts[0]);
+        for (int i = 1; i < parts.length; i++) {
+            camelCase.append(parts[i].substring(0, 1).toUpperCase())
+                    .append(parts[i].substring(1));
+        }
+        return camelCase.toString();
     }
 
     @Override
@@ -156,13 +170,13 @@ public class ProvideServiceImpl implements ProvideService {
                 movie.getMetadata().setGenerateName("handsome-movie-");
 
                 // 处理图片
-                return fileAttachmentSvc.updateFile(movie.getSpec().getVod_pic())
+                return fileAttachmentSvc.updateFile(movie.getSpec().getVodPic())
                     .flatMap(imageUri -> {
-                        movie.getSpec().setVod_pic(imageUri);
+                        movie.getSpec().setVodPic(imageUri);
                         return client.create(movie);
                     })
                     .onErrorResume(e -> {
-                        log.error("Failed to process image for movie: {}", movie.getSpec().getVod_name());
+                        log.error("Failed to process image for movie: {}", movie.getSpec().getVodName());
                         return client.create(movie);
                     });
             })

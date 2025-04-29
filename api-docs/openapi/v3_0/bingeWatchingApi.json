@@ -2,10 +2,10 @@
   "openapi" : "3.0.1",
   "info" : {
     "title" : "Halo",
-    "version" : "2.20.8"
+    "version" : "2.20.14"
   },
   "servers" : [ {
-    "url" : "http://localhost:32777",
+    "url" : "http://localhost:36144",
     "description" : "Generated server url"
   } ],
   "security" : [ {
@@ -581,7 +581,7 @@
         }
       },
       "HandsomeMovieSpec" : {
-        "required" : [ "vod_name", "vod_pic" ],
+        "required" : [ "vodName", "vodPic" ],
         "type" : "object",
         "properties" : {
           "classicLines" : {
@@ -604,7 +604,7 @@
             "type" : "string",
             "description" : "追剧状态"
           },
-          "type_name" : {
+          "typeName" : {
             "type" : "string",
             "description" : "影视类型"
           },
@@ -612,35 +612,35 @@
             "type" : "string",
             "description" : "更新周期/周"
           },
-          "vod_actor" : {
+          "vodActor" : {
             "type" : "string",
             "description" : "影视演员"
           },
-          "vod_content" : {
+          "vodContent" : {
             "type" : "string",
             "description" : "影视描述"
           },
-          "vod_en" : {
+          "vodEn" : {
             "type" : "string",
             "description" : "英文名称"
           },
-          "vod_lang" : {
+          "vodLang" : {
             "type" : "string",
             "description" : "地区语言"
           },
-          "vod_name" : {
+          "vodName" : {
             "type" : "string",
             "description" : "影视名称"
           },
-          "vod_pic" : {
+          "vodPic" : {
             "type" : "string",
             "description" : "影视图片"
           },
-          "vod_score" : {
+          "vodScore" : {
             "type" : "string",
             "description" : "影视评分"
           },
-          "vod_year" : {
+          "vodYear" : {
             "type" : "string",
             "description" : "影视年份"
           }

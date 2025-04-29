@@ -16,7 +16,7 @@
             <div class="flex-shrink-0 flex flex-col items-center w-full lg:w-[480px]">
                 <div class="relative w-[420px] h-[600px] group perspective-1000">
                     <div class="relative w-full h-full rounded-3xl shadow-2xl bg-black overflow-hidden flex items-center justify-center border-2 border-gray-700 transform-gpu transition-all duration-500 ease-out group-hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] group-hover:border-blue-500/50">
-                        <img th:src="${movie.spec.vod_pic}" th:alt="${movie.spec.vod_name}" loading="lazy"
+                        <img th:src="${movie.spec.vodPic}" th:alt="${movie.spec.vodName}" loading="lazy"
                              class="handsome-bingeWatching-poster-img w-full h-full object-cover bg-gray-900 rounded-3xl transition-all duration-500 ease-out transform-gpu group-hover:scale-[1.02] group-hover:brightness-110">
                     </div>
                     <!-- 自动提示 -->
@@ -27,7 +27,7 @@
                         <span class="text-white/90 text-sm">点击海报发布影评</span>
                     </div>
                 </div>
-                <a th:href="${movie.spec.vod_pic}" target="_blank"
+                <a th:href="${movie.spec.vodPic}" target="_blank"
                    class="mt-8 px-8 py-3 rounded-xl border border-gray-500 text-gray-300 hover:bg-gray-800 transition text-lg">下载原图</a>
                 <!-- 评论弹窗 -->
                 <div class="handsome-bingeWatching-modal" id="commentModal">
@@ -119,28 +119,28 @@
             <div class="flex-1 flex flex-col gap-8 justify-center items-start w-full">
                 <!-- 主标题+返回列表按钮 -->
                 <div class="flex items-center gap-6 mb-2">
-                    <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight text-white" th:text="${movie.spec.vod_name}"></h1>
+                    <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight text-white" th:text="${movie.spec.vodName}"></h1>
                     <a href="/movies" class="px-6 py-2 rounded-lg border border-gray-500 text-gray-300 bg-black/60 hover:bg-gray-800 transition text-lg">返回列表</a>
                 </div>
                 <!-- 基础信息分区 -->
                 <div class="text-2xl text-gray-300 space-y-2 mb-2">
                     <div>
-                        <span th:text="${movie.spec.type_name}"></span>
-                        <span th:if="${movie.spec.type_name} != null and movie.spec.type_name != '' and movie.spec.vod_year != null and movie.spec.vod_year != ''"> · </span>
-                        <span th:text="${movie.spec.vod_year}"></span>
+                        <span th:text="${movie.spec.typeName}"></span>
+                        <span th:if="${movie.spec.typeName} != null and movie.spec.typeName != '' and movie.spec.vodYear != null and movie.spec.vodYear != ''"> · </span>
+                        <span th:text="${movie.spec.vodYear}"></span>
                     </div>
-                    <div th:if="${movie.spec.vod_actor}"><span class="text-gray-400">主演：</span><span th:text="${movie.spec.vod_actor}"></span></div>
-                    <div th:if="movie.spec.status != null or movie.spec.vod_score != null">
+                    <div th:if="${movie.spec.vodActor}"><span class="text-gray-400">主演：</span><span th:text="${movie.spec.vodActor}"></span></div>
+                    <div th:if="movie.spec.status != null or movie.spec.vodScore != null">
                         <span th:if="${movie.spec.status}" class="text-gray-400">状态：</span><span th:if="${movie.spec.status}" th:text="${movie.spec.status}"></span>
-                        <span th:if="${movie.spec.status} and ${movie.spec.vod_score}" class="mx-2">·</span>
-                        <span th:if="${movie.spec.vod_score}" class="text-gray-400">评分：</span><span th:if="${movie.spec.vod_score}" th:text="${movie.spec.vod_score}"></span>
+                        <span th:if="${movie.spec.status} and ${movie.spec.vodScore}" class="mx-2">·</span>
+                        <span th:if="${movie.spec.vodScore}" class="text-gray-400">评分：</span><span th:if="${movie.spec.vodScore}" th:text="${movie.spec.vodScore}"></span>
                     </div>
                 </div>
                 <!-- 简介分区 -->
                 <div class="w-full bg-[#18181c] bg-opacity-90 rounded-2xl shadow p-8 mb-2">
                     <div class="text-xl text-gray-200 font-semibold mb-2">简介</div>
-                    <div th:if="${movie.spec.vod_content != null and movie.spec.vod_content != ''}" class="text-lg text-gray-300 leading-relaxed" th:text="${movie.spec.vod_content}"></div>
-                    <div th:if="${movie.spec.vod_content == null or movie.spec.vod_content == ''}" class="text-gray-500">暂无简介</div>
+                    <div th:if="${movie.spec.vodContent != null and movie.spec.vodContent != ''}" class="text-lg text-gray-300 leading-relaxed" th:text="${movie.spec.vodContent}"></div>
+                    <div th:if="${movie.spec.vodContent == null or movie.spec.vodContent == ''}" class="text-gray-500">暂无简介</div>
                 </div>
                 <!-- 经典台词分区 -->
                 <div class="quotes-container" th:if="${movie.spec.classicLines != null and !#lists.isEmpty(movie.spec.classicLines)}">

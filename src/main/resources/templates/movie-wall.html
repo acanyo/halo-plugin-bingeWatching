@@ -97,16 +97,16 @@
                  class="movie-card fade-in"
                  th:data-name="${movie.metadata.name}">
                 <img class="lazy"
-                     th:data-src="${movie.spec.vod_pic}"
-                     th:alt="${movie.spec.vod_name}"
+                     th:data-src="${movie.spec.vodPic}"
+                     th:alt="${movie.spec.vodName}"
                      src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
                 <!-- 加载动画 -->
                 <div class="loading-skeleton">
                     <div class="spinner"></div>
                 </div>
                 <div class="movie-info">
-                    <h3 class="truncate" th:text="${movie.spec.vod_name}"></h3>
-                    <p th:if="${movie.spec.vod_year != null}" th:text="${movie.spec.vod_year}"></p>
+                    <h3 class="truncate" th:text="${movie.spec.vodName}"></h3>
+                    <p th:if="${movie.spec.vodYear != null}" th:text="${movie.spec.vodYear}"></p>
                 </div>
             </div>
         </div>
