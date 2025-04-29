@@ -22,7 +22,7 @@ spec:
               children: "查看 海报墙 帮助文档"
             - $el: img
               attrs:
-                src: "/plugins/timeline/assets/static/img/link.svg"
+                src: "/plugins/bingeWatching/assets/static/img/link.svg"
                 width: "14px"
                 height: "14px"
                 style:
