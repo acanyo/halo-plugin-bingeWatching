@@ -14,61 +14,95 @@
         <div class="w-full max-w-[1600px] flex flex-col lg:flex-row items-start gap-16 py-14 px-8">
             <!-- 左侧海报区 -->
             <div class="flex-shrink-0 flex flex-col items-center w-full lg:w-[480px]">
-                <div class="relative w-[420px] h-[600px] rounded-3xl shadow-2xl bg-black overflow-hidden flex items-center justify-center border-2 border-gray-700">
-                    <img th:src="${movie.spec.vod_pic}" th:alt="${movie.spec.vod_name}" loading="lazy"
-                         class="handsome-bingeWatching-poster-img w-full h-full object-cover bg-gray-900 rounded-3xl cursor-pointer">
+                <div class="relative w-[420px] h-[600px] group">
+                    <div class="relative w-full h-full rounded-3xl shadow-2xl bg-black overflow-hidden flex items-center justify-center border-2 border-gray-700">
+                        <img th:src="${movie.spec.vod_pic}" th:alt="${movie.spec.vod_name}" loading="lazy"
+                             class="handsome-bingeWatching-poster-img w-full h-full object-cover bg-gray-900 rounded-3xl cursor-pointer transition-transform duration-300 group-hover:scale-105">
+                    </div>
+                    <!-- 气泡提示 -->
+                    <div class="tooltip-bubble opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute -right-4 top-6 transform translate-x-full">
+                        <div class="relative bg-gray-900/90 backdrop-blur-sm text-white px-4 py-3 rounded-xl shadow-xl">
+                            <div class="absolute -left-2 top-4 transform -translate-x-full">
+                                <div class="w-0 h-0 border-t-8 border-t-transparent border-r-[16px] border-r-gray-900/90 border-b-8 border-b-transparent"></div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                                </svg>
+                                <span class="whitespace-nowrap">点击海报发布影评</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <a th:href="${movie.spec.vod_pic}" target="_blank"
                    class="mt-8 px-8 py-3 rounded-xl border border-gray-500 text-gray-300 hover:bg-gray-800 transition text-lg">下载原图</a>
                 <!-- 评论弹窗 -->
-                <div id="likcc-bingeWatching-comment-modal" class="handsome-bingeWatching-modal fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden opacity-0 transition-opacity duration-300">
-                    <div class="handsome-bingeWatching-modal-content bg-[#18181c] rounded-2xl shadow-xl p-8 max-w-lg w-full relative transform transition-transform duration-300 scale-95">
-                        <button id="likcc-bingeWatching-modal-close" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
-                        <halo:comment
-                            group="bingewatching.lik.cc"
-                            kind="HandsomeMovie"
-                            th:attr="name=${movie.metadata.name}"
-                            mpMode="false"
-                             />
+                <div class="handsome-bingeWatching-modal" id="commentModal">
+                    <div class="handsome-bingeWatching-modal-content">
+                        <div class="handsome-bingeWatching-modal-header">
+                            <h3 class="handsome-bingeWatching-modal-title">发表影评</h3>
+                            <button class="handsome-bingeWatching-modal-close" id="closeModal">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="handsome-bingeWatching-modal-body">
+                            <div th:id="${'comment-bingewatching-' + movie.metadata.name}"></div>
+                        </div>
                     </div>
                 </div>
-                <script>
+                <script th:inline="javascript">
                 document.addEventListener('DOMContentLoaded', function() {
-                    const modal = document.getElementById('likcc-bingeWatching-comment-modal');
-                    const modalContent = modal.querySelector('.handsome-bingeWatching-modal-content');
-                    const closeBtn = document.getElementById('likcc-bingeWatching-modal-close');
+                    // 初始化评论组件
+                    const commentConfig = {
+                        group: "bingewatching.lik.cc",
+                        kind: "HandsomeMovie",
+                        name: /*[[${movie.metadata.name}]]*/ '',
+                        size: 5,
+                        replySize: 5,
+                        withReplies: true,
+                        withReplySize: 3,
+                        useAvatarProvider: true,
+                        avatarProvider: "gravatar",
+                        avatarProviderMirror: "https://weavatar.com/avatar/",
+                        avatarPolicy: "retro",
+                        captchaEnabled: true,
+                        mpMode: false
+                    };
+
+                    const domId = `comment-bingewatching-${commentConfig.name}`;
+                    
+                    // 初始化评论组件
+                    if (window.CommentWidget) {
+                        window.CommentWidget.init(`#${domId}`, commentConfig);
+                    } else {
+                        console.error('CommentWidget not found');
+                    }
+
+                    // 弹窗控制
+                    const modal = document.getElementById('commentModal');
+                    const closeBtn = document.getElementById('closeModal');
                     const posterImg = document.querySelector('.handsome-bingeWatching-poster-img');
 
                     function showModal() {
-                        modal.classList.remove('hidden');
-                        // 触发重排后添加过渡效果
-                        setTimeout(() => {
-                            modal.classList.remove('opacity-0');
-                            modalContent.classList.remove('scale-95');
-                        }, 10);
+                        modal.classList.add('active');
                     }
 
                     function hideModal() {
-                        modal.classList.add('opacity-0');
-                        modalContent.classList.add('scale-95');
-                        setTimeout(() => {
-                            modal.classList.add('hidden');
-                        }, 300);
+                        modal.classList.remove('active');
                     }
 
+                    // 事件监听
                     posterImg?.addEventListener('click', showModal);
-                    
                     closeBtn?.addEventListener('click', hideModal);
-                    
-                    modal?.addEventListener('click', function(e) {
+                    modal?.addEventListener('click', (e) => {
                         if (e.target === modal) {
                             hideModal();
                         }
                     });
-
-                    // 添加 ESC 键关闭
-                    document.addEventListener('keydown', function(e) {
-                        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    document.addEventListener('keydown', (e) => {
+                        if (e.key === 'Escape' && modal.classList.contains('active')) {
                             hideModal();
                         }
                     });
@@ -102,29 +136,143 @@
                     <div th:if="${movie.spec.vod_content != null and movie.spec.vod_content != ''}" class="text-lg text-gray-300 leading-relaxed" th:text="${movie.spec.vod_content}"></div>
                     <div th:if="${movie.spec.vod_content == null or movie.spec.vod_content == ''}" class="text-gray-500">暂无简介</div>
                 </div>
-                <!-- 经典台词分区（美化轮播引用风格+切换按钮） -->
-                <div class="w-full bg-[#18181c] bg-opacity-90 rounded-2xl shadow p-8">
-                    <div class="text-xl text-gray-200 font-semibold mb-2">经典台词</div>
-                    <div id="likcc-bingeWatching-quotes-carousel" class="relative" th:if="${movie.spec.classicLines != null and !#lists.isEmpty(movie.spec.classicLines)}">
-                        <button id="likcc-bingeWatching-quotes-prev" type="button"
-                            class="likcc-quotes-btn absolute -left-8 top-1/2 -translate-y-1/2 z-10"
-                            aria-label="上一条台词">
-                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M14 18l-6-7 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
-                        <div id="likcc-bingeWatching-quotes-list" class="likcc-quotes-quote-box mx-auto" style="max-width:90%;"></div>
-                        <button id="likcc-bingeWatching-quotes-next" type="button"
-                            class="likcc-quotes-btn absolute -right-8 top-1/2 -translate-y-1/2 z-10"
-                            aria-label="下一条台词">
-                            <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M8 4l6 7-6 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        </button>
+                <!-- 经典台词分区 -->
+                <div class="quotes-container" th:if="${movie.spec.classicLines != null and !#lists.isEmpty(movie.spec.classicLines)}">
+                    <div id="quotes-carousel" class="relative overflow-hidden">
+                        <!-- 台词卡片容器 -->
+                        <div id="quotes-list" class="relative w-full">
+                            <div th:each="quote, stat : ${movie.spec.classicLines}" 
+                                 th:id="'quote-' + ${stat.index}"
+                                 class="quote-card absolute inset-0 transition-all duration-500 flex items-center justify-center"
+                                 th:classappend="${stat.first} ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'">
+                                <div class="quote-content text-center max-w-3xl mx-auto px-4">
+                                    <div class="quote-text-zh" th:text="|『${quote}』|">『台词内容』</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 导航控制 -->
+                        <div class="quotes-nav">
+                            <button id="quotes-prev" type="button" class="quotes-btn" aria-label="上一条台词" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                            </button>
+
+                            <div id="quotes-dots" class="quotes-dots">
+                                <button th:each="quote, stat : ${movie.spec.classicLines}"
+                                        th:class="'quote-dot ' + ${stat.first ? 'active' : ''}"
+                                        th:attr="data-index=${stat.index}"
+                                        type="button">
+                                </button>
+                            </div>
+
+                            <button id="quotes-next" type="button" class="quotes-btn" aria-label="下一条台词">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div th:if="${movie.spec.classicLines == null or #lists.isEmpty(movie.spec.classicLines)}" class="text-gray-500">暂无经典台词</div>
+
                     <script th:inline="javascript">
                         /*<![CDATA[*/
-                        window.likccClassicLines = /*[[${movie.spec.classicLines}]]*/ [];
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const quotes = /*[[${movie.spec.classicLines}]]*/ [];
+                            if (!quotes || !Array.isArray(quotes) || quotes.length === 0) {
+                                document.querySelector('.quotes-container').style.display = 'none';
+                                return;
+                            }
+
+                            const carousel = document.getElementById('quotes-carousel');
+                            const quotesList = document.getElementById('quotes-list');
+                            const prevBtn = document.getElementById('quotes-prev');
+                            const nextBtn = document.getElementById('quotes-next');
+                            const dots = document.querySelectorAll('.quote-dot');
+                            
+                            let currentIndex = 0;
+                            let isAnimating = false;
+
+                            // 更新导航圆点
+                            function updateDots() {
+                                dots.forEach((dot, index) => {
+                                    dot.classList.toggle('active', index === currentIndex);
+                                });
+                            }
+
+                            // 更新按钮状态
+                            function updateButtons() {
+                                prevBtn.disabled = currentIndex === 0;
+                                nextBtn.disabled = currentIndex === quotes.length - 1;
+                            }
+
+                            // 切换到指定台词
+                            function goToQuote(newIndex) {
+                                if (isAnimating || newIndex === currentIndex || newIndex < 0 || newIndex >= quotes.length) return;
+                                isAnimating = true;
+
+                                const direction = newIndex > currentIndex ? 1 : -1;
+                                const currentQuote = document.getElementById(`quote-${currentIndex}`);
+                                const nextQuote = document.getElementById(`quote-${newIndex}`);
+
+                                // 设置初始位置
+                                nextQuote.style.transform = `translateX(${direction * 100}%)`;
+                                nextQuote.style.opacity = '0';
+                                
+                                // 强制重排
+                                void nextQuote.offsetWidth;
+
+                                // 执行动画
+                                currentQuote.style.transform = `translateX(${-direction * 100}%)`;
+                                currentQuote.style.opacity = '0';
+                                nextQuote.style.transform = 'translateX(0)';
+                                nextQuote.style.opacity = '1';
+
+                                // 动画完成后更新状态
+                                setTimeout(() => {
+                                    currentIndex = newIndex;
+                                    updateDots();
+                                    updateButtons();
+                                    isAnimating = false;
+                                }, 500);
+                            }
+
+                            // 绑定点击事件
+                            dots.forEach((dot, index) => {
+                                dot.addEventListener('click', () => goToQuote(index));
+                            });
+
+                            // 绑定按钮事件
+                            prevBtn.addEventListener('click', () => {
+                                if (!prevBtn.disabled && !isAnimating) {
+                                    goToQuote(currentIndex - 1);
+                                }
+                            });
+
+                            nextBtn.addEventListener('click', () => {
+                                if (!nextBtn.disabled && !isAnimating) {
+                                    goToQuote(currentIndex + 1);
+                                }
+                            });
+
+                            // 键盘支持
+                            document.addEventListener('keydown', (e) => {
+                                if (e.key === 'ArrowLeft' && !prevBtn.disabled && !isAnimating) {
+                                    goToQuote(currentIndex - 1);
+                                }
+                                if (e.key === 'ArrowRight' && !nextBtn.disabled && !isAnimating) {
+                                    goToQuote(currentIndex + 1);
+                                }
+                            });
+
+                            // 初始化状态
+                            updateButtons();
+                        });
                         /*]]>*/
                     </script>
                 </div>
+                <div th:if="${movie.spec.classicLines == null or #lists.isEmpty(movie.spec.classicLines)}" 
+                     class="text-gray-500 text-center py-8">暂无经典台词</div>
             </div>
         </div>
     </main>

@@ -204,4 +204,150 @@
   .movie-info p {
     @apply text-sm text-gray-300;
   }
+
+  /* 经典台词轮播样式 */
+  .quotes-container {
+    @apply w-full max-w-4xl mx-auto;
+    min-height: 200px;
+  }
+
+  #quotes-carousel {
+    @apply relative overflow-hidden;
+    min-height: inherit;
+  }
+
+  #quotes-list {
+    @apply relative w-full h-full;
+    min-height: inherit;
+  }
+
+  .quote-card {
+    @apply absolute inset-0;
+    @apply transition-all duration-500 ease-out;
+    @apply flex items-center justify-center;
+    will-change: transform, opacity;
+  }
+
+  .quote-content {
+    @apply text-center max-w-3xl mx-auto px-4;
+  }
+
+  .quote-text-zh {
+    @apply text-white/90 text-3xl font-medium leading-relaxed;
+    @apply transition-all duration-300;
+  }
+
+  .quote-text-en {
+    @apply text-gray-400 text-lg leading-relaxed;
+    @apply transition-all duration-300;
+  }
+
+  .quote-marks {
+    @apply absolute -left-1 top-4;
+    @apply text-gray-600 text-8xl opacity-30;
+    @apply font-serif select-none pointer-events-none;
+    content: "\201C";
+  }
+
+  /* 轮播控制 */
+  .quotes-nav {
+    @apply absolute bottom-0 left-0 right-0;
+    @apply flex items-center justify-between;
+    @apply py-4 px-6;
+  }
+
+  .quotes-dots {
+    @apply flex items-center justify-center gap-3;
+    @apply absolute left-1/2 -translate-x-1/2;
+  }
+
+  .quote-dot {
+    @apply w-2 h-2 rounded-full bg-gray-600;
+    @apply transition-all duration-300 ease-out;
+    @apply hover:bg-gray-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-gray-400;
+  }
+
+  .quote-dot.active {
+    @apply bg-white;
+  }
+
+  .quotes-btn {
+    @apply w-12 h-12 rounded-full;
+    @apply flex items-center justify-center;
+    @apply bg-gray-800/50 text-gray-400;
+    @apply hover:bg-gray-700/50 hover:text-white;
+    @apply transition-all duration-300 ease-out;
+    @apply disabled:opacity-30 disabled:cursor-not-allowed;
+    @apply focus:outline-none focus:ring-2 focus:ring-gray-400;
+  }
+
+  .quotes-btn:not(:disabled):hover {
+    @apply transform scale-110;
+  }
+
+  .quotes-btn:not(:disabled):active {
+    @apply transform scale-95;
+  }
+
+  .quotes-btn svg {
+    @apply w-6 h-6;
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  /* 响应式调整 */
+  @media (max-width: 640px) {
+    .quotes-container {
+      min-height: 150px;
+    }
+
+    .quote-text-zh {
+      @apply text-2xl;
+    }
+
+    .quotes-nav {
+      @apply py-3 px-4;
+    }
+
+    .quotes-dots {
+      @apply gap-2;
+    }
+
+    .quote-dot {
+      @apply w-1.5 h-1.5;
+    }
+
+    .quotes-btn {
+      @apply w-10 h-10;
+    }
+
+    .quotes-btn svg {
+      @apply w-5 h-5;
+    }
+  }
+
+  /* 海报区域样式 */
+  .tooltip-bubble {
+    @apply pointer-events-none;
+    @apply filter drop-shadow-lg;
+    animation: tooltipFloat 3s ease-in-out infinite;
+  }
+
+  @keyframes tooltipFloat {
+    0%, 100% {
+      transform: translate(100%, 0);
+    }
+    50% {
+      transform: translate(100%, -6px);
+    }
+  }
+
+  /* 海报悬停效果 */
+  .handsome-bingeWatching-poster-img {
+    @apply transform transition-all duration-300;
+  }
+
+  .handsome-bingeWatching-poster-img:hover {
+    @apply brightness-110;
+  }
 } 

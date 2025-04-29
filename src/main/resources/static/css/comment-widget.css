@@ -51,42 +51,141 @@
     --halo-comment-widget-component-emoji-picker-color-border-over: rgba(255, 255, 255, 0.2);
 }
 
-/* 评论弹窗样式 */
-.likcc-bingeWatching-modal {
-    display: flex;
+/* 评论弹窗基础样式 */
+.handsome-bingeWatching-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: none;
     align-items: center;
     justify-content: center;
-    padding: 40px 0;
-    min-height: 100vh;
-    box-sizing: border-box;
+    padding: 1rem;
 }
 
-.likcc-bingeWatching-modal-content {
-    max-height: 80vh;
-    min-width: 380px;
-    overflow-y: auto;
-    background: rgba(32, 32, 36, 0.98);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.25), 0 1.5px 6px 0 rgba(64,158,255,0.08);
-    border: 1.5px solid rgba(64,158,255,0.08);
-    padding: 2.5rem 2rem 2rem 2rem;
-    transition: box-shadow 0.3s cubic-bezier(.4,0,.2,1), background 0.3s;
-    position: relative;
-}
-
-.halo-comment-widget {
+.handsome-bingeWatching-modal.active {
     display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-    min-height: 0;
-    border-radius: var(--halo-comment-widget-base-border-radius);
+    animation: modalFadeIn 0.3s ease forwards;
+}
+
+.handsome-bingeWatching-modal-content {
+    width: 100%;
+    max-width: 800px;
+    background: #18181c;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    animation: modalContentZoomIn 0.3s ease forwards;
+}
+
+/* 弹窗头部 */
+.handsome-bingeWatching-modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.handsome-bingeWatching-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+/* 弹窗内容区 */
+.handsome-bingeWatching-modal-body {
+    padding: 1.5rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    /* 自定义滚动条样式 */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* Webkit浏览器的滚动条样式 */
+.handsome-bingeWatching-modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.handsome-bingeWatching-modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.handsome-bingeWatching-modal-body::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.handsome-bingeWatching-modal-body::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* 关闭按钮 */
+.handsome-bingeWatching-modal-close {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.handsome-bingeWatching-modal-close:hover {
+    color: #fff;
+}
+
+/* 动画定义 */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalContentZoomIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 移动端适配 */
+@media (max-width: 640px) {
+    .handsome-bingeWatching-modal {
+        padding: 0.5rem;
+    }
+    
+    .handsome-bingeWatching-modal-content {
+        max-width: 100%;
+    }
+    
+    .handsome-bingeWatching-modal-body {
+        max-height: 80vh; /* 移动端稍微增加一点高度 */
+        padding: 1rem;
+    }
+}
+
+/* 评论组件容器 */
+.halo-comment-widget {
     font-family: var(--halo-comment-widget-base-font-family);
     font-size: var(--halo-comment-widget-base-font-size);
     line-height: var(--halo-comment-widget-base-line-height);
     color: var(--halo-comment-widget-base-color);
+    height: 100%;
 }
 
-/* 评论表单样式 */
+/* 评论表单 */
 .halo-comment-widget-form {
     background-color: var(--halo-comment-widget-component-form-input-bg-color);
     border: 1px solid var(--halo-comment-widget-component-form-input-border-color);
@@ -96,117 +195,88 @@
 }
 
 .halo-comment-widget-form textarea {
+    width: 100%;
+    min-height: 80px;
+    max-height: 200px;
+    padding: 0.75rem;
     background-color: var(--halo-comment-widget-component-form-input-bg-color);
     color: var(--halo-comment-widget-component-form-input-color);
     border: 1px solid var(--halo-comment-widget-component-form-input-border-color);
     border-radius: var(--halo-comment-widget-base-border-radius);
-    padding: 0.75rem;
-    width: 100%;
-    min-height: 100px;
     resize: vertical;
-    transition: all 0.3s ease;
-    box-shadow: 0 1.5px 6px 0 rgba(64,158,255,0.04);
-    font-size: 1rem;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 0.875rem;
+    transition: all 0.2s;
 }
 
 .halo-comment-widget-form textarea:focus {
-    border-color: #409eff;
-    box-shadow: 0 0 0 2px rgba(64,158,255,0.18);
+    border-color: var(--halo-comment-widget-component-form-input-border-color-focus);
+    box-shadow: var(--halo-comment-widget-component-form-input-box-shadow-focus);
 }
 
-/* 评论按钮样式 */
-.halo-comment-widget-form-button {
-    background-color: var(--halo-comment-widget-component-form-button-submit-bg-color);
-    color: var(--halo-comment-widget-component-form-button-submit-color);
-    border: 1px solid var(--halo-comment-widget-component-form-button-submit-border-color);
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s, border-color 0.2s;
-    box-shadow: 0 2px 8px 0 rgba(64,158,255,0.08);
-    font-size: 1rem;
-    letter-spacing: 0.5px;
-}
-
-.halo-comment-widget-form-button:hover {
-    background: linear-gradient(90deg, #409eff 80%, #66b1ff 100%);
-    box-shadow: 0 4px 16px 0 rgba(64,158,255,0.16);
-    border-color: #66b1ff;
-}
-
-/* 评论列表样式 */
+/* 评论列表 */
 .halo-comment-widget-list {
-    flex: unset !important;
-    min-height: unset !important;
-    overflow-y: unset !important;
-    max-height: unset !important;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 
 .halo-comment-widget-item {
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    padding: 1.2rem 0 1.2rem 0;
-    transition: background 0.2s;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(75, 85, 99, 0.2);
 }
 
 .halo-comment-widget-item:last-child {
     border-bottom: none;
 }
 
-.halo-comment-widget-item:hover {
-    background: rgba(64,158,255,0.03);
-}
-
-/* 评论头像样式 */
+/* 评论头像 */
 .halo-comment-widget-avatar {
-    width: var(--halo-comment-widget-component-avatar-size);
-    height: var(--halo-comment-widget-component-avatar-size);
-    border-radius: var(--halo-comment-widget-component-avatar-rounded);
-    object-fit: cover;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
-/* 评论内容样式 */
+/* 评论内容 */
 .halo-comment-widget-content {
-    margin-left: 1rem;
     flex: 1;
+    min-width: 0;
 }
 
 .halo-comment-widget-author {
+    font-weight: 500;
     color: #fff;
-    font-weight: 700;
-    font-size: 1.05em;
-    letter-spacing: 0.2px;
     margin-bottom: 0.25rem;
 }
 
 .halo-comment-widget-text {
-    color: var(--halo-comment-widget-base-color);
+    color: #e5e7eb;
     margin-bottom: 0.5rem;
+    word-break: break-word;
 }
 
 .halo-comment-widget-meta {
     color: var(--halo-comment-widget-base-info-color);
-    font-size: 0.875rem;
+    font-size: 0.75rem;
 }
 
-/* 分页样式 */
+/* 分页 */
 .halo-comment-widget-pagination {
     display: flex;
     justify-content: center;
     gap: 0.5rem;
     margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(75, 85, 99, 0.2);
 }
 
 .halo-comment-widget-pagination-button {
-    padding: 0.5rem 1rem;
+    padding: 0.375rem 0.75rem;
     border: 1px solid var(--halo-comment-widget-component-form-input-border-color);
     border-radius: var(--halo-comment-widget-base-border-radius);
-    background-color: transparent;
     color: var(--halo-comment-widget-base-color);
-    cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    transition: all 0.2s;
 }
 
 .halo-comment-widget-pagination-button:hover {
@@ -216,51 +286,18 @@
 .halo-comment-widget-pagination-button.active {
     background-color: var(--halo-comment-widget-component-pagination-button-bg-color-active);
     border-color: var(--halo-comment-widget-component-pagination-button-border-color-active);
-    color: white;
 }
 
-/* 关闭按钮美化 */
-#likcc-bingeWatching-modal-close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    z-index: 10;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(64,158,255,0.08);
-    border: none;
-    color: #409eff;
-    font-size: 1.4rem;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px 0 rgba(64,158,255,0.08);
-    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
-    cursor: pointer;
-    outline: none;
-    padding: 0;
-}
-#likcc-bingeWatching-modal-close:hover {
-    background: #409eff;
-    color: #fff;
-    box-shadow: 0 4px 16px 0 rgba(64,158,255,0.18);
-    transform: scale(1.12);
+/* 自定义滚动条 */
+.scrollbar-thin::-webkit-scrollbar {
+    @apply w-1.5;
 }
 
-/* 评论区整体间距优化 */
-.likcc-bingeWatching-modal-content .halo-comment-widget {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+.scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-gray-800/40 rounded-full;
 }
 
-/* 滚动条美化 */
-.likcc-bingeWatching-modal-content::-webkit-scrollbar {
-    width: 8px;
-    background: rgba(64,158,255,0.04);
-    border-radius: 8px;
-}
-.likcc-bingeWatching-modal-content::-webkit-scrollbar-thumb {
-    background: rgba(64,158,255,0.18);
-    border-radius: 8px;
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-600/40 rounded-full;
+    @apply hover:bg-gray-500/60;
 } 
