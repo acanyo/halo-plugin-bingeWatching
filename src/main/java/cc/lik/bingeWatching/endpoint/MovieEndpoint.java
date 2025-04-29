@@ -42,7 +42,6 @@ public class MovieEndpoint implements CustomEndpoint {
     private final CronUpdateDataJob cronUpdateDataJob;
     
     private final ObjectMapper objectMapper = JsonMapper.builder()
-            .propertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .build();
 

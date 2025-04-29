@@ -45,13 +45,13 @@ const initialFormState: FormState = {
 };
 
 const updateCycleOptions = [
-  { label: '周一', value: '1' },
-  { label: '周二', value: '2' },
-  { label: '周三', value: '3' },
-  { label: '周四', value: '4' },
-  { label: '周五', value: '5' },
-  { label: '周六', value: '6' },
-  { label: '周日', value: '7' }
+  {label: '周一', value: '1'},
+  {label: '周二', value: '2'},
+  {label: '周三', value: '3'},
+  {label: '周四', value: '4'},
+  {label: '周五', value: '5'},
+  {label: '周六', value: '6'},
+  {label: '周日', value: '7'}
 ];
 
 const formState = ref<FormState>(initialFormState);
@@ -75,7 +75,7 @@ const onVisibleChange = (visible: boolean) => {
 };
 
 const handleResetForm = () => {
-  formState.value = { ...initialFormState };
+  formState.value = {...initialFormState};
   showMovieSelection.value = false;
   movieList.value = [];
   selectedMovies.value.clear();
@@ -117,7 +117,7 @@ const handleConfirmSelection = async () => {
 
   saving.value = true;
   try {
-    const selectedMovieList = movieList.value.filter(movie => 
+    const selectedMovieList = movieList.value.filter(movie =>
       selectedMovies.value.has(movie.id)
     ).map(movie => ({
       metadata: {
@@ -170,7 +170,7 @@ const handleSyncMovie = async () => {
       `/apis/api.bingewatching.lik.cc/v1alpha1/movies/-/${encodeURIComponent(formState.value.vodName)}`
     );
     const result = await response.json();
-    
+
     if (result.error) {
       Toast.error(`获取影视信息失败: ${result.message || '未知错误'}`);
       return;
@@ -205,7 +205,7 @@ const handleSyncMovie = async () => {
         kind: "HandsomeMovie",
         apiVersion: "api.bingewatching.lik.cc/v1alpha1",
       }];
-      
+
       try {
         await handsomeMovieApi.insertMovie(movieData);
         Toast.success("同步成功");
@@ -374,13 +374,13 @@ const handleSyncMovie = async () => {
   }
 
   :deep(.formkit-input) {
-    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm
     focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm;
     height: 32px;
   }
 
   :deep(.formkit-select) {
-    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm 
+    @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm
     focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm;
     height: 32px;
   }
@@ -424,7 +424,7 @@ const handleSyncMovie = async () => {
   overflow: hidden;
   background: #fff;
   transition: all 0.2s;
-  
+
   img {
     width: 100%;
     height: 100%;
