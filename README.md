@@ -1,6 +1,8 @@
 # Halo 影视墙插件
 
-[![](https://img.shields.io/badge/使用文档-blue.svg)](https://www.yuque.com/handsome125/halo-plugins/bxla0cz3i2igtmao?singleDoc) [![](https://img.shields.io/badge/演示站点-green.svg)](https://www.lik.cc/movies)
+[![](https://img.shields.io/badge/使用文档-blue.svg)](https://www.yuque.com/handsome125/halo-plugins/bxla0cz3i2igtmao?singleDoc) 
+
+[![](https://img.shields.io/badge/演示站点-green.svg)](https://www.lik.cc/movies)
 
 > 本插件跟社区已存在豆瓣插件并无冲突，本插件只是为了影视墙和记录自己追剧进度可以理解为追番
 
