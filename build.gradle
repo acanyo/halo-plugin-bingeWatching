@@ -50,6 +50,14 @@ build {
     }
 }
 
+sourceSets {
+    main {
+        resources {
+            exclude 'tailwindCSS/**'
+        }
+    }
+}
+
 halo {
     version = '2.20'
     debug = true
