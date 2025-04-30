@@ -13,5 +13,5 @@ jobs:
     permissions:
       contents: write
     with:
-      app-id: "app-iWNZz"
+      app-id: app-iWNZz
       ui-path: "ui"
