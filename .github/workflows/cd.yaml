@@ -14,4 +14,6 @@ jobs:
       contents: write
     with:
       app-id: app-iWNZz
+      node-version: "20"
+      pnpm-version: "10"
       ui-path: "ui"
