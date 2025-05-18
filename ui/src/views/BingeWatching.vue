@@ -489,7 +489,7 @@ onMounted(() => {
                   {{ movie.spec.seen }}
                 </td>
                 <td class="px-4 py-4 table-td">
-                  {{ movie.spec.newSeen || '-' }}
+                  <span class="text-yellow-likcc">{{ movie.spec.newSeen || '-' }}</span>
                 </td>
                 <td class="px-4 py-4 table-td">
                   {{ movie.spec.updateCycle }}
@@ -571,6 +571,11 @@ onMounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.text-yellow-likcc {
+  color: #1571fa !important;
+  font-weight: bold;
 }
 </style> 
 

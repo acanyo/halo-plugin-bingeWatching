@@ -41,7 +41,7 @@ public class HandsomeMovie extends AbstractExtension {
         @Schema(description = "已看集数")
         private String seen;
         @Schema(description = "更新集数")
-        private String newSeen;
+        private String newSeen = "0";
         @Schema(description = "更新周期/周")
         private String updateCycle;
         @Schema(description = "追剧状态")
