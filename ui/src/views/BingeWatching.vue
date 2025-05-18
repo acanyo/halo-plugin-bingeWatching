@@ -25,6 +25,8 @@ import IconParkMovie from '~icons/icon-park-outline/movie';
 import IconParkEdit from '~icons/icon-park-outline/edit';
 import IconParkMessage from '~icons/icon-park-outline/message';
 import IconParkHelp from '~icons/icon-park-outline/help';
+import IconParkPlus from '~icons/icon-park-outline/plus';
+import IconParkMinus from '~icons/icon-park-outline/minus';
 
 defineOptions({
   name: "MovieView",
@@ -182,6 +184,60 @@ const handleOpenQuotesModal = (movie: HandsomeMovie) => {
 const onQuotesModalClose = async () => {
   selectedMovie.value = undefined;
   refetch();
+};
+
+const handleIncreaseSeen = async (movie: HandsomeMovie) => {
+  try {
+    const currentSeen = Number(movie.spec.seen) || 0;
+    const currentNewSeen = Number(movie.spec.newSeen) || 0;
+    const newSeen = currentSeen + 1;
+    const newNewSeen = currentNewSeen > 0 ? currentNewSeen - 1 : 0;
+    await handsomeMovieApi.updateHandsomeMovie(
+      movie.metadata.name,
+      {
+        ...movie,
+        spec: {
+          ...movie.spec,
+          seen: newSeen.toString(),
+          newSeen: newNewSeen.toString()
+        }
+      }
+    );
+    Toast.success("更新成功");
+    refetch();
+  } catch (error) {
+    console.error("Failed to update movie:", error);
+    Toast.error("更新失败");
+  }
+};
+
+const handleDecreaseSeen = async (movie: HandsomeMovie) => {
+  try {
+    const currentSeen = Number(movie.spec.seen) || 0;
+    const currentNewSeen = Number(movie.spec.newSeen) || 0;
+    if (currentSeen <= 0) {
+      Toast.warning("已看集数不能小于0");
+      return;
+    }
+    const newSeen = currentSeen - 1;
+    const newNewSeen = currentNewSeen + 1;
+    await handsomeMovieApi.updateHandsomeMovie(
+      movie.metadata.name,
+      {
+        ...movie,
+        spec: {
+          ...movie.spec,
+          seen: newSeen.toString(),
+          newSeen: newNewSeen.toString()
+        }
+      }
+    );
+    Toast.success("更新成功");
+    refetch();
+  } catch (error) {
+    console.error("Failed to update movie:", error);
+    Toast.error("更新失败");
+  }
 };
 
 onMounted(() => {
@@ -439,6 +495,20 @@ onMounted(() => {
                 </td>
                 <td class="px-4 py-4 table-td" v-permission="['plugin:bingewatching:manage']">
                   <div class="flex items-center justify-end">
+                    <button
+                      class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+                      @click="handleDecreaseSeen(movie)"
+                      v-tooltip="'减少已看集数'"
+                    >
+                      <IconParkMinus class="h-4 w-4" />
+                    </button>
+                    <button
+                      class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
+                      @click="handleIncreaseSeen(movie)"
+                      v-tooltip="'增加已看集数'"
+                    >
+                      <IconParkPlus class="h-4 w-4" />
+                    </button>
                     <button
                       class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full"
                       @click="handleOpenQuotesModal(movie)"
