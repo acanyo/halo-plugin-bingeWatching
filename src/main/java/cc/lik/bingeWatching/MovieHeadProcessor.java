@@ -31,6 +31,7 @@ public class MovieHeadProcessor implements TemplateHeadProcessor {
 
         String script = PROPERTY_PLACEHOLDER_HELPER.replacePlaceholders("""
             <!-- bingeWatching start -->
+            <link rel="stylesheet" href="/plugins/bingeWatching/assets/static/css/tailwind.css?version=${version}" />
             <script type="text/javascript" src="/plugins/bingeWatching/assets/static/js/movie-wall.js?version=${version}"></script>
             <script type="text/javascript" src="/plugins/bingeWatching/assets/static/js/movie-detail.js?version=${version}"></script>
             <!-- bingeWatching end -->
