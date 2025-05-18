@@ -37,8 +37,8 @@ public class MovieQuery extends SortableRequest {
         return StringUtils.defaultIfBlank(queryParams.getFirst("keyword"), null);
     }
     @Nullable
-    public String getTimelineType() {
-        return queryParams.getFirst("type");
+    public String getStatus() {
+        return queryParams.getFirst("status");
     }
 
     public ListOptions toListOptions() {
@@ -53,52 +53,63 @@ public class MovieQuery extends SortableRequest {
                 contains("metadata.name", keyword)
             )));
 
-        Optional.ofNullable(getTimelineType())
+        Optional.ofNullable(getStatus())
             .filter(StringUtils::isNotBlank)
             .ifPresent(type -> builder.andQuery(equal("spec.status", type)));
         return builder.build();
     }
-
-    public Comparator<HandsomeMovie> toComparator() {
-        List<Comparator<HandsomeMovie>> comparators = new ArrayList<>();
-        var sort = getSort();
-        var ctOrder = sort.getOrderFor("createTime");
-        if (ctOrder != null) {
-            Comparator<HandsomeMovie> comparator =
-                comparing(timeline -> timeline.getMetadata().getCreationTimestamp());
-            if (ctOrder.isDescending()) {
-                comparator = comparator.reversed();
-            }
-            comparators.add(comparator);
-        }
-        Comparator<HandsomeMovie> defaultComparator =
-            comparing(timeline -> timeline.getMetadata().getCreationTimestamp());
-        comparators.add(defaultComparator.reversed());
-        return comparators.stream()
-            .reduce(Comparator::thenComparing)
-            .orElse(null);
-    }
-
-
-    public Sort getSort() {
-        var sort = SortResolver.defaultInstance.resolve(exchange);
-        return sort.and(Sort.by("metadata.creationTimestamp").descending());
-    }
-
-    public PageRequest toPageRequest() {
-        return PageRequestImpl.of(getPage(), getSize(), getSort());
-    }
-
     public static void buildParameters(Builder builder) {
         IListRequest.buildParameters(builder);
         builder.parameter(sortParameter())
             .parameter(parameterBuilder()
                 .in(ParameterIn.QUERY)
                 .name("keyword")
-                .description("timeline filtered by keyword.")
+                .description("bingeWatching filtered by keyword.")
+                .implementation(String.class)
+                .required(false))
+            .parameter(parameterBuilder()
+                .in(ParameterIn.QUERY)
+                .name("status")
+                .description("BingeWatching status.")
                 .implementation(String.class)
                 .required(false));
     }
 
+    public Sort getSort() {
+        var sort = SortResolver.defaultInstance.resolve(exchange);
+        if (sort.isEmpty()) {
+            return Sort.by("spec.newSeen").descending();
+        }
+        return sort;
+    }
+
+    public Comparator<HandsomeMovie> toComparator() {
+        List<Comparator<HandsomeMovie>> comparators = new ArrayList<>();
+        var sort = getSort();
+        
+        // 处理更新集数排序
+        var newSeenOrder = sort.getOrderFor("spec.newSeen");
+        if (newSeenOrder != null) {
+            Comparator<HandsomeMovie> comparator = comparing(movie -> {
+                String newSeen = movie.getSpec().getNewSeen();
+                return newSeen != null && !newSeen.trim().isEmpty() ? Integer.parseInt(newSeen) : 0;
+            });
+            if (newSeenOrder.isDescending()) {
+                comparator = comparator.reversed();
+            }
+            comparators.add(comparator);
+        }
+        
+        // 默认按更新集数倒序
+        Comparator<HandsomeMovie> defaultComparator = comparing(movie -> {
+            String newSeen = movie.getSpec().getNewSeen();
+            return newSeen != null && !newSeen.trim().isEmpty() ? Integer.parseInt(newSeen) : 0;
+        });
+        comparators.add(defaultComparator.reversed());
+        
+        return comparators.stream()
+            .reduce(Comparator::thenComparing)
+            .orElse(null);
+    }
 
 } 

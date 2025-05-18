@@ -34,14 +34,14 @@ export class HandsomeMovieApi {
     type?: string;
   }): Promise<HandsomeMovieList> {
     const { data } = await this.axios.get(
-      `${this.baseUrl}/handsomemovies`,
+      `/apis/api.bingewatching.lik.cc/v1alpha1/movies`,
       {
         params: {
           page: params?.page || 1,
           size: params?.size || 20,
           keyword: params?.keyword,
-          sort: params?.sort,
-          type: params?.type,
+          sort: params?.sort?.[0],
+          status: params?.type,
         },
       }
     );

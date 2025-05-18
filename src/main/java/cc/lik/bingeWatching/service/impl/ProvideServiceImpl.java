@@ -183,6 +183,6 @@ public class ProvideServiceImpl implements ProvideService {
             .then();
     }
     static Sort defaultSort() {
-        return Sort.by("metadata.creationTimestamp").descending();
+        return Sort.by("spec.newSeen").descending();
     }
 }

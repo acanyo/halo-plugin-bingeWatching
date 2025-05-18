@@ -85,7 +85,7 @@ const {
       const response = await handsomeMovieApi.listHandsomeMovies({
         page: page.value,
         size: size.value,
-        sort: [selectedSort.value].filter(Boolean) as string[],
+        sort: selectedSort.value ? [selectedSort.value] : undefined,
         type: selectedType.value,
         keyword: keyword.value,
       });
@@ -346,6 +346,10 @@ onMounted(() => {
                 :items="[
                   {
                     label: '默认',
+                  },
+                  {
+                    label: '更新集数从大到小',
+                    value: 'spec.newSeen,desc',
                   },
                   {
                     label: '较近创建',
