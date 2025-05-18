@@ -15,13 +15,12 @@ import {
 } from "@halo-dev/components";
 import {useQuery} from "@tanstack/vue-query";
 import {computed, onMounted, ref, watch} from "vue";
-import {formatDatetime} from "@/utils/date";
 import {useRouteQuery} from "@vueuse/router";
 import MovieEditingModal from "@/components/MovieEditingModal.vue";
 import MovieSyncModal from "@/components/MovieSyncModal.vue";
 import MovieQuotesModal from "@/components/MovieQuotesModal.vue";
 import {handsomeMovieApi} from "@/api";
-import type {HandsomeMovie} from "@/api/generated";
+import type {HandsomeMovie, HandsomeMovieList} from "@/api/generated";
 import IconParkMovie from '~icons/icon-park-outline/movie';
 import IconParkEdit from '~icons/icon-park-outline/edit';
 import IconParkMessage from '~icons/icon-park-outline/message';
@@ -43,9 +42,13 @@ const movieStatus = ref<{ label: string; value: string | undefined; }[]>([
   { label: "弃坑", value: "弃坑" },
 ]);
 
-const page = ref(1);
-const size = ref(20);
-const keyword = ref("");
+const page = useRouteQuery<number>("page", 1, {
+  transform: Number,
+});
+const size = useRouteQuery<number>("size", 20, {
+  transform: Number,
+});
+const keyword = useRouteQuery<string>("keyword", "");
 const searchText = ref("");
 const total = ref(0);
 const editingModal = ref(false);
@@ -77,27 +80,29 @@ const {
   queryKey: ["movies", page, size, selectedSort, selectedType, keyword],
   queryFn: async () => {
     try {
-      const response = await fetch(
-        `/apis/api.bingewatching.lik.cc/v1alpha1/movies?page=${page.value - 1}&size=${size.value}${
-          selectedType.value ? `&type=${selectedType.value}` : ""
-        }${keyword.value ? `&keyword=${encodeURIComponent(keyword.value)}` : ""}`
-      );
-      const data: { items: HandsomeMovie[]; total: number } = await response.json();
-      data.items = data.items.map(item => ({
-        ...item,
-        metadata: {
-          ...item.metadata,
-          timestamp: formatDatetime(item.metadata.creationTimestamp)
-        }
-      }));
-      total.value = data.total;
-      return data.items;
+      const response = await handsomeMovieApi.listHandsomeMovies({
+        page: page.value,
+        size: size.value,
+        sort: [selectedSort.value].filter(Boolean) as string[],
+        type: selectedType.value,
+        keyword: keyword.value,
+      });
+      return response;
     } catch (error) {
       console.error("Failed to fetch Movies:", error);
       Toast.error("获取海报墙信息列表失败");
-      return [];
+      return {
+        items: [],
+        total: 0,
+        page: page.value,
+        size: size.value
+      } as HandsomeMovieList;
     }
   },
+  keepPreviousData: true,
+  onSuccess: (data: HandsomeMovieList) => {
+    total.value = data.total;
+  }
 });
 
 const handleCheckAllChange = (e: Event) => {
@@ -105,7 +110,7 @@ const handleCheckAllChange = (e: Event) => {
   checkedAll.value = checked;
   if (checkedAll.value) {
     selectedMovies.value =
-      movies.value?.map((movie) => movie.metadata.name) || [];
+      movies.value?.items.map((movie) => movie.metadata.name) || [];
   } else {
     selectedMovies.value.length = 0;
   }
@@ -315,7 +320,7 @@ onMounted(() => {
 
       <VLoading v-if="isLoading" />
 
-      <Transition v-else-if="!movies?.length" appear name="fade">
+      <Transition v-else-if="!movies?.items.length" appear name="fade">
         <VEmpty
           title="暂无影视记录"
           message="暂无影视记录"
@@ -384,7 +389,7 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr
-                v-for="movie in movies"
+                v-for="movie in movies.items"
                 :key="movie.metadata.name"
                 class="border-b last:border-none hover:bg-gray-100"
               >
